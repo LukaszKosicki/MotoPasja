@@ -13,7 +13,7 @@ export default class BlogCard extends React.Component {
     componentDidMount() {
         if (this.props.images.length != 0) {
             this.setState({
-                srcImages: 'images/' + this.props.images[0].fileName
+                srcImages: this.props.images[0].fileName
             });
         }
     }

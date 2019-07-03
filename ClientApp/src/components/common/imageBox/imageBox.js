@@ -21,8 +21,9 @@ export default class ImageBox extends React.Component {
         var formData = new FormData();
         formData.append("image", e.target.files[0]);
         formData.append("fullTime", this.props.fullTime);
+        formData.append("fileName", this.props.id);
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/blog/image/");
+        xhr.open("POST", "image/uploadImage");
         xhr.send(formData);
 
         var fr = new FileReader();

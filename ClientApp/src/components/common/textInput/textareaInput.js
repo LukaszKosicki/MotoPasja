@@ -12,6 +12,7 @@ export default class TextareaInput extends React.Component {
     }
 
     count = event => {
+        this.props.getText(event.target.value);
         const ln = event.target.value.length;
         this.setState({
             length: ln

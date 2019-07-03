@@ -14,7 +14,7 @@ export default class Blog extends React.Component {
     componentDidMount() {
         const imgs = [];
         for (var i = 0; i < this.props.images.length; i++) {
-            var sr = '/images/' + this.props.images[i].fileName;
+            var sr = this.props.images[i].fileName;
             imgs.push({ src: sr });
         }
         this.setState({
