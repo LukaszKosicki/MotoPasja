@@ -9,7 +9,7 @@ export default class GetBlogs extends React.Component {
         };
     }
 
-    getBlogs() {
+    getBlogs = () => {
         const xhr = new XMLHttpRequest();
         xhr.open('get', 'blog/GetBlogsList', true);
         xhr.onload = () => {

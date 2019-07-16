@@ -17,7 +17,7 @@ namespace MotoPasja.Models.Blog
 
         public IQueryable<BlogModel> Blogs => context.Blogs;
 
-        public void SaveBlog(BlogModel model)
+        public void AddBlog(BlogModel model)
         {
             
             if (model.Id == 0)
@@ -26,22 +26,40 @@ namespace MotoPasja.Models.Blog
                 context.SaveChanges();
                 var pathToImages = EFBlogRepository.GetPath(model.DateOfAddition);
                 var newPathToImages = EFBlogRepository.GetPath(model.Id.ToString());
-                string[] imagesPath = Directory.GetFiles(pathToImages);
 
-                if (model.Images == null) model.Images = new List<BlogImage>();
-
-                foreach(var file in imagesPath)
+                DirectoryInfo di = new DirectoryInfo(pathToImages);
+                if (di.Exists)
                 {
-                    model.Images.Add(new BlogImage
+                    string[] imagesPath = Directory.GetFiles(pathToImages);
+                    if (model.Images == null) model.Images = new List<BlogImage>();
+
+                    foreach (var file in imagesPath)
                     {
-                        Alt = "p",
-                        FileName = $@"images/blog/{model.Id.ToString()}/{Path.GetFileName(file)}"
-                    });
+                        model.Images.Add(new BlogImage
+                        {
+                            Alt = "p",
+                            FileName = $@"images/blog/{model.Id.ToString()}/{Path.GetFileName(file)}"
+                        });
+                    }
+                    Directory.Move(pathToImages, newPathToImages);
                 }
                 context.Blogs.Update(model);
-                Directory.Move(pathToImages, newPathToImages);
+                context.SaveChanges();
             }
-            context.SaveChanges();
+        }
+
+        public bool DeleteBlog(int blogId)
+        {
+            try
+            {
+                context.Blogs.Remove(context.Blogs.FirstOrDefault(b => b.Id == blogId));
+                context.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static string GetPath(string folderName)

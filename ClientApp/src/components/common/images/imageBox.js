@@ -1,47 +1,60 @@
 ﻿import React from 'react';
+import { Button } from 'reactstrap';
 
 export default class ImageBox extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            src: '/icons/addImage.png'
+            src: '/icons/addImage.png',
+            loadDiv: 'none'
         };
-        this.sendImage = this.sendImage.bind(this);
     }
-    changeImage(evt) {
+
+    componentDidMount() {
+        if (this.props.path != undefined) {
+            this.setState({
+                src: this.props.path
+            });
+        }
+    }
+
+    displayImage = (evt) => {
         var fr = new FileReader();
         fr.readAsDataURL(evt.target.files[0]);
         fr.addEventListener('load', () => {
             this.setState({
                 src: fr.result
             });
-        }); 
+        });
+
+        this.sendImage(evt);
     }
-    sendImage(e) {
+
+    sendImage = (e) => {
         var formData = new FormData();
+
         formData.append("image", e.target.files[0]);
-        formData.append("fullTime", this.props.fullTime);
+        formData.append("createTime", this.props.createTime);
         formData.append("fileName", this.props.id);
+        formData.append("model", this.props.model);
+
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "image/uploadImage");
+        xhr.open("POST", "image/uploadImage");      
         xhr.send(formData);
 
-        var fr = new FileReader();
-        fr.readAsDataURL(e.target.files[0]);
-        fr.addEventListener('load', () => {
-            this.setState({
-                src: fr.result
-            });
-        }); 
+        this.setState({
+            loadDiv: 'block'
+        });
 
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 this.setState({
-                    src: xhr.responseText.substr(1, xhr.responseText.length - 2)
+                    loadDiv: 'none'
                 });
             }
         }
     }
+
     render() {
         var mainDiv = {
             width: '120px',
@@ -73,10 +86,38 @@ export default class ImageBox extends React.Component {
             maxWidth: '100px',
             maxHeight: '100px'
         };
+        var loadDivStyles = {
+            width: '100%',
+            height: '100%',
+            backgroundColor: '#b3bbc3',
+            position: 'absolute',
+            zIndex: '1000',
+            left: '0px',
+            top: '0px',
+            opacity: '0.8',
+            display: this.state.loadDiv 
+        };
+        var delButtonStyles = {
+            zIndex: 100000,
+            left: '50%',
+            top: '50%',
+            opacity: '0.6',
+            textAlign:'center',
+            transform: 'translate(-50%, -50%)',
+            position: 'absolute'
+        };
         return (
             <div style={mainDiv}>
+                {
+                    ((this.state.src !== '/icons/addImage.png') && (this.state.loadDiv !== 'block')) &&
+                    <div style={delButtonStyles}>
+                        <Button color="danger">Usuń</Button>
+                    </div>
+                }
                 <div>
-                    <input id={this.props.id} onChange={this.sendImage} style={inputStyles} type='file' />
+                    <div style={loadDivStyles}>
+                    </div>
+                    <input id={this.props.id} onChange={this.displayImage} style={inputStyles} type='file' />
                     <label htmlFor={this.props.id} style={labelStyles}>
                         <img style={imgStyles} src={this.state.src} />
                     </label>

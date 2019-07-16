@@ -36,8 +36,14 @@ namespace MotoPasja.Controllers
         {
             model.Author = "GalAnonim";
             model.EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE"));
-            repository.SaveBlog(model);
+            repository.AddBlog(model);
             return Json("sukces");
+        }
+
+        [HttpDelete]
+        public JsonResult Delete(int blogId)
+        {
+            return Json(repository.DeleteBlog(blogId));
         }
     }
 }

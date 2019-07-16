@@ -15,7 +15,7 @@ namespace MotoPasja.Controllers
         {
             IFormFile file = Request.Form.Files[0];
             var fileName = Request.Form["fileName"];
-            var folderName = Request.Form["fullTime"];
+            var folderName = Request.Form["createTime"];
             var pathToFolder = Path.Combine(Directory.GetCurrentDirectory(),
                 "clientapp/public/images/blog", folderName);
 
@@ -25,11 +25,13 @@ namespace MotoPasja.Controllers
             MyFile myFile = new MyFile(pathToFolder, fileName);
             myFile.HowTheFileExistsDelete();
 
-            using (var stream = new FileStream(Path.Combine(pathToFolder, fileName + Path.GetExtension(file.FileName)), FileMode.Create))
+            var pathToFile = Path.Combine(pathToFolder, fileName + Path.GetExtension(file.FileName));
+
+            using (var stream = new FileStream(pathToFile, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
-            return Json($@"images/blog/{fileName}");
+            return Json(true);
         }
     }
 }

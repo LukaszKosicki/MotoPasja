@@ -7,11 +7,9 @@ export default class TextareaInput extends React.Component {
         this.state = {
             length: 0
         };
-
-        this.count = this.count.bind(this);
     }
 
-    count = event => {
+    count = (event) => {
         this.props.getText(event.target.value);
         const ln = event.target.value.length;
         this.setState({
@@ -22,8 +20,8 @@ export default class TextareaInput extends React.Component {
     render() {
         return (
             <FormGroup>
-                <Label for={this.props.inputId}>Opis blogu</Label>
-                <Input onKeyUp={this.count} type="textarea" id={this.props.inputId} />
+                <Label>{this.props.name}</Label>
+                <Input onKeyUp={this.count} type="textarea"/>
                 <small>Ilość znaków: {this.state.length}</small>
             </FormGroup>
             );

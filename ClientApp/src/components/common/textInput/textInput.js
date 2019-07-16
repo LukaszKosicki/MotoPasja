@@ -7,10 +7,9 @@ export default class TextInput extends React.Component {
         this.state = {
             length: 0
         };
-        this.count = this.count.bind(this);
     }
 
-    count = event => {
+    count = (event) => {
         this.props.getText(event.target.value);
         const ln = event.target.value.length;
         this.setState({
@@ -21,7 +20,7 @@ export default class TextInput extends React.Component {
     render() {
         return (
             <FormGroup>
-                <Label for={this.props.inputId}>Tytuł:</Label>
+                <Label for={this.props.inputId}>{this.props.name}</Label>
                 <Input onKeyUp={this.count} maxLength={this.props.maxLength} id={this.props.inputId} />
                 <small>Pozostało: {this.props.maxLength - this.state.length} z 70 znaków</small>
             </FormGroup>
