@@ -28,6 +28,7 @@ namespace MotoPasja
                 Configuration["Data:MotoPasjaDatabase:ConnectionString"]));
             services.AddTransient<IBlogRepository, EFBlogRepository>();
             services.AddTransient<IPostRepository, EFPostRepository>();
+            services.AddTransient<IImageRepository, EFImageRepository>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // In production, the React files will be served from this directory

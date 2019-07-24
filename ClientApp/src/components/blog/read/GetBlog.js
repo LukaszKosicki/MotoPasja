@@ -9,7 +9,7 @@ export default class GetBlog extends React.Component {
         };
     }
 
-    getBlog() {
+    getBlog = () => {
         const url = 'blog/GetBlog/?id=' + this.props.id;
         const xhr = new XMLHttpRequest();
         xhr.open('get', url, true);
@@ -29,7 +29,9 @@ export default class GetBlog extends React.Component {
     render() {
         if (this.state.blog != null) {
             return (
-                <Blog {...this.state.blog} />
+                <Blog
+                    {...this.state.blog}
+                    getBlog={this.getBlog} />
             );
         }
         else {

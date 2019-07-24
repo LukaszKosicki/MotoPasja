@@ -34,8 +34,8 @@ export default class ImageBox extends React.Component {
         var formData = new FormData();
 
         formData.append("image", e.target.files[0]);
-        formData.append("createTime", this.props.createTime);
-        formData.append("fileName", this.props.id);
+        formData.append("modelId", this.props.modelId);
+        formData.append("fileName", this.props.fileName);
         formData.append("model", this.props.model);
 
         var xhr = new XMLHttpRequest();
@@ -51,8 +51,35 @@ export default class ImageBox extends React.Component {
                 this.setState({
                     loadDiv: 'none'
                 });
+                if (typeof this.props.modelId === 'number') {
+                    this.props.getBlog();
+                }
             }
         }
+    }
+
+    deleteImage = () => {
+        var formData = new FormData();
+
+        formData.append("fileName", this.props.fileName);
+        formData.append("modelId", this.props.modelId);
+        formData.append("model", "blog");
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("delete", "image/deleteImage");
+        xhr.send(formData);
+
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                this.setState({
+                    src: '/icons/addImage.png'
+                });
+                if (typeof this.props.modelId === 'number') {
+                    this.props.getBlog();
+                }
+            }
+        }
+
     }
 
     render() {
@@ -111,7 +138,7 @@ export default class ImageBox extends React.Component {
                 {
                     ((this.state.src !== '/icons/addImage.png') && (this.state.loadDiv !== 'block')) &&
                     <div style={delButtonStyles}>
-                        <Button color="danger">Usuń</Button>
+                        <Button onClick={this.deleteImage} color="danger">Usuń</Button>
                     </div>
                 }
                 <div>

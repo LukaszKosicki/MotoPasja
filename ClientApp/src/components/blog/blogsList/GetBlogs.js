@@ -11,7 +11,7 @@ export default class GetBlogs extends React.Component {
 
     getBlogs = () => {
         const xhr = new XMLHttpRequest();
-        xhr.open('get', 'blog/GetBlogsList', true);
+        xhr.open('get', 'blog/GetBlogs', true);
         xhr.onload = () => {
             const data = JSON.parse(xhr.responseText);
             this.setState({

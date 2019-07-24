@@ -6,32 +6,49 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using MotoPasja.Models;
 using System.IO;
+using MotoPasja.Models.Blog;
+using Microsoft.EntityFrameworkCore;
 
 namespace MotoPasja.Controllers
 {
     public class ImageController : Controller
     {
-        public async Task<JsonResult> UploadImage()
+        private IImageRepository repository;
+
+        public ImageController(IImageRepository repo, IBlogRepository blogRepo)
         {
-            IFormFile file = Request.Form.Files[0];
+            this.repository = repo;
+        }
+
+        public async Task UploadImage()
+        {
+            var modelId = Request.Form["modelId"];
             var fileName = Request.Form["fileName"];
-            var folderName = Request.Form["createTime"];
-            var pathToFolder = Path.Combine(Directory.GetCurrentDirectory(),
-                "clientapp/public/images/blog", folderName);
+            var model = "blog";
 
-            MyFolder myFolder = new MyFolder(pathToFolder);
-            myFolder.IfItDoesNotExistCreateIt();
+            await Image.UploadImage(Request.Form.Files[0], fileName , modelId);
 
-            MyFile myFile = new MyFile(pathToFolder, fileName);
-            myFile.HowTheFileExistsDelete();
+            int numberId;
 
-            var pathToFile = Path.Combine(pathToFolder, fileName + Path.GetExtension(file.FileName));
-
-            using (var stream = new FileStream(pathToFile, FileMode.Create))
+            if (int.TryParse(modelId,out numberId))
             {
-                await file.CopyToAsync(stream);
+                repository.AddImageToModel(numberId, fileName + Path.GetExtension(Request.Form.Files[0].FileName), model);
             }
-            return Json(true);
+        }
+
+        public void DeleteImage()
+        {
+            var fileName = Request.Form["fileName"];
+            var modelId = Request.Form["modelId"];
+            var model = Request.Form["model"];
+            Image.DeleteImage(fileName, modelId, model);
+
+            int numberId;      
+            
+            if (int.TryParse(modelId,out numberId))
+            {
+                repository.DeleteImage(numberId, fileName, model);
+            }
         }
     }
 }

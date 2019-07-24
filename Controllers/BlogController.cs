@@ -20,11 +20,14 @@ namespace MotoPasja.Controllers
             this.repository = repo;
         }
 
-        public JsonResult GetBlogsList()
+        [HttpGet]
+        public JsonResult GetBlogs()
         {
+            //zmienić, żeby pobierało tylko jedno zdjęcie (większa ilość jest zbędna)
             return Json(repository.Blogs.Include(b => b.Images));
         }
 
+        [HttpGet]
         public JsonResult GetBlog(int id)
         {
             return Json(repository.Blogs.Include(b => b.Images).
@@ -32,18 +35,22 @@ namespace MotoPasja.Controllers
         }
 
         [HttpPost]
-        public JsonResult AddBlog([FromBody] BlogModel model)
+        public JsonResult CreateBlog([FromBody] BlogModel model)
         {
-            model.Author = "GalAnonim";
-            model.EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE"));
-            repository.AddBlog(model);
-            return Json("sukces");
+            repository.CreateBlog(model);
+            return Json(model.Id);
         }
 
         [HttpDelete]
         public JsonResult Delete(int blogId)
         {
             return Json(repository.DeleteBlog(blogId));
+        }
+
+        [HttpPatch]
+        public JsonResult UpdateBlog([FromBody] BlogModel model)
+        {
+            return Json(repository.UpdateBlog(model));
         }
     }
 }

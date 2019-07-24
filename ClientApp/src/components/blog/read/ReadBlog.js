@@ -5,12 +5,11 @@ import { Button } from 'reactstrap';
 import $ from 'jquery';
 import { Redirect } from 'react-router-dom';
 
-export default class ShowBlog extends React.Component {
+export default class ReadBlog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            blogId: this.props.match.params.id,
-            isDelete: false
+            blogId: this.props.match.params.id
         };
     }
 
@@ -18,16 +17,12 @@ export default class ShowBlog extends React.Component {
         $.ajax({
             url: "blog/delete/?blogId=" + this.state.blogId,
             method: 'delete',
-            success: (data) => {
-                this.setState({
-                    isDelete: data
-                });
+            success: (result) => {
+                if (result === true) {
+                    this.props.history.push('/blogs');
+                }
             }
         });
-    }
-
-    redirectToBlogsList = () => {
-        return <Redirect to='/blogs' />
     }
 
     render() {
@@ -42,9 +37,6 @@ export default class ShowBlog extends React.Component {
         };
         return (
             <div>
-                {
-                    this.state.isDelete && this.redirectToBlogsList()              
-                }
                 <div style={blogStyles}>
                     <GetBlog id={this.state.blogId} />
                     <GetPosts id={this.state.blogId} />

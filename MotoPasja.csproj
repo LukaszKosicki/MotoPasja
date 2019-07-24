@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\public\images\blog\" />
+    <Folder Include="ClientApp\src\js\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

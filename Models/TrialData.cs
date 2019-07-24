@@ -32,7 +32,7 @@ namespace MotoPasja.Models
                         {
                              new BlogImage
                              {
-                                 FileName = "aaa.jpg"
+                                 FileName = "images/aaa.jpg"
                              }
                         },
                         Posts = new List<PostModel>
@@ -48,15 +48,15 @@ namespace MotoPasja.Models
                                 {
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     }
                                 }
                             },
@@ -71,15 +71,15 @@ namespace MotoPasja.Models
                                 {
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     }
                                 }
                             }
@@ -97,7 +97,7 @@ namespace MotoPasja.Models
                         {
                              new BlogImage
                              {
-                                 FileName = "aaa.jpg"
+                                 FileName = "images/aaa.jpg"
                              }
                         },
                         Posts = new List<PostModel>
@@ -113,15 +113,15 @@ namespace MotoPasja.Models
                                 {
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     }
                                 }
                             },
@@ -136,15 +136,15 @@ namespace MotoPasja.Models
                                 {
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     }
                                 }
                             }
@@ -162,7 +162,7 @@ namespace MotoPasja.Models
                         {
                              new BlogImage
                              {
-                                 FileName = "aaa.jpg"
+                                 FileName = "images/aaa.jpg"
                              }
                         },
                         Posts = new List<PostModel>
@@ -178,15 +178,15 @@ namespace MotoPasja.Models
                                 {
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName ="images/aaa.jpg"
                                     }
                                 }
                             },
@@ -201,15 +201,15 @@ namespace MotoPasja.Models
                                 {
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     }
                                 }
                             }
@@ -227,7 +227,7 @@ namespace MotoPasja.Models
                         {
                              new BlogImage
                              {
-                                 FileName = "aaa.jpg"
+                                 FileName = "images/aaa.jpg"
                              }
                         },
                         Posts = new List<PostModel>
@@ -243,15 +243,15 @@ namespace MotoPasja.Models
                                 {
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     }
                                 }
                             },
@@ -266,15 +266,15 @@ namespace MotoPasja.Models
                                 {
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "aaa.jpg"
+                                        FileName = "images/aaa.jpg"
                                     }
                                 }
                             }
