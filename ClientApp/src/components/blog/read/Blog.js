@@ -1,8 +1,7 @@
 ﻿import React from 'react';
 import Lightbox from 'react-lightbox-component';
 import "react-lightbox-component/build/css/index.css";
-import Information from '../../common/information/Information';
-import { Button } from 'reactstrap';
+import RegistrationCRUD from '../../common/information/RegistrationCRUD';
 import BlogModel from '../create/BlogModel';
 import $ from 'jquery';
 
@@ -27,31 +26,7 @@ export default class Blog extends React.Component {
             images: imgs
         };
     }
-/*
-    componentDidUpdate(prevProps, prevState) {
-        var update = false;
-        if (this.props.images.length !== prevProps.images.length) {
-            update = true;
-        } else {
-            for (var i = 0; i < this.props.images.length; i++) {
-                if (this.props.images[i].src !== prevProps.images.src) {
-                    update = true;
-                }
-            }
-        }
-      
-        if (update) {
-            const imgs = [];
-            for (var i = 0; i < this.props.images.length; i++) {
-                var sr = this.props.images[i].fileName;
-                imgs.push({ src: sr });
-            }
-            this.setState({
-                images: imgs
-            });
-        }
-    }
-       */
+
     componentDidMount() {
         this.setState({
             title: this.props.title,
@@ -116,12 +91,6 @@ export default class Blog extends React.Component {
         var lightboxDiv = {
             textAlign: 'center'
         };
-        var editButtonStyles = {
-            padding: '0px'
-        };
-        var editDivStyles = {
-            textAlign: 'right'
-        };
         if (this.state.edit) {
             return (
                 <div>
@@ -135,6 +104,7 @@ export default class Blog extends React.Component {
                         anuluj={this.cancelEdit}
                         getBlog={this.props.getBlog}
                         edit={true}
+                        model={'blog'}
                     />
                     <hr />
                 </div>
@@ -142,14 +112,12 @@ export default class Blog extends React.Component {
         } else {
             return (
                 <div>
-                    <div style={editDivStyles}>
-                        <Information informations={[
-                            "Autor: " + this.props.author,
-                            "Data dodania: " + this.props.dateOfAddition,
-                            "Ostatnia aktywność: " + this.props.editingDate
-                        ]} />
-                        <Button style={editButtonStyles} onClick={this.edit} color="link">Edytuj</Button>
-                    </div>
+                    <RegistrationCRUD informations={[
+                        "Autor: " + this.props.author,
+                        "Data dodania: " + this.props.dateOfAddition,
+                        "Ostatnia aktywność: " + this.props.editingDate]}
+                        edit={this.edit}
+                    />
                     <h1>{this.props.title}</h1>
                     <p>{this.props.contents}</p>
                     <div style={containerDiv}>

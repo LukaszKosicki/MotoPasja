@@ -20,5 +20,25 @@ namespace MotoPasja.Controllers
             return Json(repository.Posts.Include(p => p.Images)
                 .Where(p => p.BlogModelId == blogId));
         }
+        
+        [HttpPost]
+        public JsonResult CreatePost([FromBody] PostModel model, int blogId)
+        {
+            repository.CreatePost(model, blogId);
+            return Json("");
+        }
+
+        [HttpDelete]
+        public JsonResult DeletePost(int postId)
+        {
+            return Json(repository.DeletePost(postId));
+
+        }
+
+        [HttpPatch]
+        public JsonResult UpdatePost([FromBody] PostModel model)
+        {
+            return Json(repository.UpdatePost(model));
+        }
     }
 }

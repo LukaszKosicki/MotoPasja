@@ -9,5 +9,8 @@ namespace MotoPasja.Models.Blog
     public interface IPostRepository
     {
         IQueryable<PostModel> Posts { get; }
+        bool CreatePost(RegistrationModel model, int blogId);
+        bool DeletePost(int postId);
+        bool UpdatePost(PostModel model);
     }
 }

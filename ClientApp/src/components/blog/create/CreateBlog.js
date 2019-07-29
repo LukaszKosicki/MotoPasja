@@ -57,6 +57,7 @@ export default class CreateBlog extends React.Component {
                     send={this.sendBlogToServer}
                     anuluj={this.redirectToBlogsList}
                     modelId={this.state.createTime}
+                    model={'blog'}
                 />
             </div>
             );

@@ -93,6 +93,7 @@ export default class BlogModel extends Component {
                             modelId={this.props.modelId}
                             path={item.fileName}
                             getBlog={this.props.getBlog}
+                            model={this.props.model}
                         />);
                         isImg = true;
                     }
@@ -105,6 +106,7 @@ export default class BlogModel extends Component {
                     id={this.props.modelId + i}
                     fileName={"img" + i}
                     getBlog={this.props.getBlog}
+                    model={this.props.model}
                 />);
             }
         }

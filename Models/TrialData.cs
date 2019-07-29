@@ -16,7 +16,7 @@ namespace MotoPasja.Models
         {
             ApplicationDbContext context = app.ApplicationServices
                 .GetRequiredService<ApplicationDbContext>();
-
+            
             context.Database.Migrate();
             if(!context.Blogs.Any())
             {

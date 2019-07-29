@@ -26,6 +26,7 @@ namespace MotoPasja
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(
                 Configuration["Data:MotoPasjaDatabase:ConnectionString"]));
+        
             services.AddTransient<IBlogRepository, EFBlogRepository>();
             services.AddTransient<IPostRepository, EFPostRepository>();
             services.AddTransient<IImageRepository, EFImageRepository>();
@@ -34,7 +35,7 @@ namespace MotoPasja
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/build";
+                configuration.RootPath = "ClientApp/public";
             });
         }
 

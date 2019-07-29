@@ -9,7 +9,18 @@ export default class GetPosts extends React.Component {
         };
     }
 
-    getPosts() {
+    deletePost = (postId) => {
+        this.state.posts.forEach((item, index, arr) => {
+            if (item.id == postId) {
+                arr.splice(index, 1);
+                this.setState({
+                    posts: arr
+                });
+            }
+        });
+    }
+
+    getPosts = () => {
         const url = 'post/getPosts/?blogId=' + this.props.id;
         const xhr = new XMLHttpRequest();
         xhr.open('get', url, true);
@@ -33,7 +44,9 @@ export default class GetPosts extends React.Component {
                 Object.keys(this.state.posts).map((type) => {
                     return (
                         <Post key={'post' + (i++)}
-                            {...this.state.posts[type]} />
+                            {...this.state.posts[type]}
+                            delete={this.deletePost}
+                        />
                     );
                 })
             );

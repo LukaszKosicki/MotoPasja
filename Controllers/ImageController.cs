@@ -24,9 +24,9 @@ namespace MotoPasja.Controllers
         {
             var modelId = Request.Form["modelId"];
             var fileName = Request.Form["fileName"];
-            var model = "blog";
+            var model = Request.Form["model"];
 
-            await Image.UploadImage(Request.Form.Files[0], fileName , modelId);
+            await Image.UploadImage(Request.Form.Files[0], fileName , modelId, model);
 
             int numberId;
 

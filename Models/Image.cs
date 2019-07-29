@@ -13,10 +13,10 @@ namespace MotoPasja.Models
         public string FileName { get; set; }
         public string Alt { get; set; }
 
-        public static async Task UploadImage(IFormFile file, string fileName, string folderName)
+        public static async Task UploadImage(IFormFile file, string fileName, string folderName, string modelName)
         {
             var pathToFolder = Path.Combine(Directory.GetCurrentDirectory(),
-                "clientapp/public/images/blog", folderName);
+                "clientapp/public/images", modelName, folderName);
 
             MyFolder myFolder = new MyFolder(pathToFolder);
             myFolder.IfItDoesNotExistCreateIt();

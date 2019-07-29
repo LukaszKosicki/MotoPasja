@@ -27,31 +27,8 @@ namespace MotoPasja.Models.Blog
             context.Blogs.Add(model);
             context.SaveChanges();
 
-            //pozyskanie ścieżki do folderu, w którym znajdują się tymczasowo zdjęcia, oraz ścieżki docelowej
-            var pathToImages = EFBlogRepository.GetPath(model.DateOfAddition);
-            var newPathToImages = EFBlogRepository.GetPath(model.Id.ToString());
-
-            //sprawdzanie czy zdjęcia zostały dodane
-            DirectoryInfo di = new DirectoryInfo(pathToImages);
-            if (di.Exists)
-            {
-                // jeśli są dodane, to pobiera ścieżki do zdjęć
-                string[] imagesPath = Directory.GetFiles(pathToImages);
-                if (model.Images == null) model.Images = new List<BlogImage>();
-
-                //zapis ścieżek w bezie danych
-                foreach (var file in imagesPath)
-                {
-                    model.Images.Add(new BlogImage
-                    {
-                        Alt = "a",
-                        FileName = $@"images/blog/{model.Id.ToString()}/{Path.GetFileName(file)}"
-                    });
-                }
-                //przenoszenie zdjęć do docelowego katalogu
-                Directory.Move(pathToImages, newPathToImages);
-            }
-
+            PathCRUD.AddImageToNewRegistration(model, "blog");
+            
             //aktualizacja dat w modelu bloga
             model.DateOfAddition = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE"));
             model.EditingDate = model.DateOfAddition;
@@ -95,12 +72,6 @@ namespace MotoPasja.Models.Blog
                 }
             }
             return false;
-        }
-
-        public static string GetPath(string folderName)
-        {
-            return (Path.Combine(
-                    Directory.GetCurrentDirectory(), "clientApp", "public", "images", "blog", folderName));
         }
     }
 }

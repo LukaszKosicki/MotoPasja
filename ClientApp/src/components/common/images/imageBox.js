@@ -52,7 +52,9 @@ export default class ImageBox extends React.Component {
                     loadDiv: 'none'
                 });
                 if (typeof this.props.modelId === 'number') {
-                    this.props.getBlog();
+                    if (this.props.model === 'blog') {
+                        this.props.getBlog();
+                    }
                 }
             }
         }
@@ -63,7 +65,7 @@ export default class ImageBox extends React.Component {
 
         formData.append("fileName", this.props.fileName);
         formData.append("modelId", this.props.modelId);
-        formData.append("model", "blog");
+        formData.append("model", this.props.model);
 
         var xhr = new XMLHttpRequest();
         xhr.open("delete", "image/deleteImage");
@@ -75,7 +77,9 @@ export default class ImageBox extends React.Component {
                     src: '/icons/addImage.png'
                 });
                 if (typeof this.props.modelId === 'number') {
-                    this.props.getBlog();
+                    if (this.props.model === 'blog') {
+                        this.props.getBlog();
+                    }
                 }
             }
         }
