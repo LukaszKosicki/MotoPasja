@@ -61,27 +61,33 @@ export default class Blog extends React.Component {
     }
 
     updateBlog = (title, contents) => {
-        var blog = {
-            id: this.props.id,
-            title: title,
-            contents: contents
-        };
+        if (title !== this.props.title || contents !== this.props.contents) {
+            var blog = {
+                id: this.props.id,
+                title: title,
+                contents: contents
+            };
 
-        $.ajax({
-            url: "blog/updateBlog",
-            type: "patch",
-            contentType: "application/json",
-            dataType: "json",
-            data: JSON.stringify(blog),
-            success: (data) => {
-                if (data === true) {
-                    this.props.getBlog();
-                    this.setState({
-                        edit: false
-                    });
+            $.ajax({
+                url: "blog/updateBlog",
+                type: "patch",
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify(blog),
+                success: (data) => {
+                    if (data === true) {
+                        this.props.getBlog();
+                        this.setState({
+                            edit: false
+                        });
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            this.setState({
+                edit: false
+            });
+        }
     }
 
     render() {

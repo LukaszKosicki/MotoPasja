@@ -3,30 +3,34 @@ import GetBlog from './GetBlog';
 import GetPosts from './GetPosts';
 import { Button } from 'reactstrap';
 import $ from 'jquery';
-import { Redirect } from 'react-router-dom';
 import BlogModel from '../create/BlogModel';
+import GetPostsFromServer from '../../../js/Post';
+import { connect } from 'react-redux';
+import getPosts from '../../../store/actions/post';
+import setBlogId from '../../../store/actions/blog';
 
-export default class ReadBlog extends React.Component {
+class ReadBlog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            blogId: this.props.match.params.id,
             createTimePost: null,
             displayAddPostForm: 'none'
         };
+        this.getPosts = GetPostsFromServer.bind(this);
     }
 
     componentDidMount() {
+        this.props.setBlogId(this.props.match.params.id);
         var time = new Date();
         var fullTime = time.getHours() + ';' + time.getMinutes() + ';' + time.getSeconds();
         this.setState({
-            createTimePost: fullTime
+            createTimePost: fullTime,
         });
     }
 
     deleteBlog = () => {
         $.ajax({
-            url: "blog/delete/?blogId=" + this.state.blogId,
+            url: "blog/delete/?blogId=" + this.props.blog.blogId,
             method: 'delete',
             success: (result) => {
                 if (result === true) {
@@ -56,16 +60,37 @@ export default class ReadBlog extends React.Component {
         };
 
         $.ajax({
-            url: "post/createPost/?blogId=" + this.state.blogId,
+            url: "post/createPost/?blogId=" + this.props.blog.blogId,
             type: "post",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             data: JSON.stringify(post),
             success: (data) => {
                 this.showHiddenNewPostForm();
+                this.getPosts();
             }
         });
     };
+
+    newPostForm = () => {
+        if (this.state.displayAddPostForm == 'block') {
+            return (
+                <div>
+                    <h3>Nowy post</h3>
+                    <BlogModel
+                        modelId={this.state.createTimePost}
+                        send={this.sendPostToServer}
+                        model={'post'}
+                        anuluj={this.cancel}
+                    />
+                </div>
+            );
+        }
+    }
+
+    cancel = () => {
+        this.showHiddenNewPostForm();
+    }
 
     render() {
         var blogStyles = {
@@ -79,7 +104,6 @@ export default class ReadBlog extends React.Component {
             width: '90%',
             backgroundColor: 'lightgrey',
             padding: '10px',
-            overflowY: 'scroll',
             maxHeight: '80vh'
         };
         var fixedMenu = {
@@ -91,25 +115,32 @@ export default class ReadBlog extends React.Component {
         };
         return (
             <div>
-                <div style={blogStyles}>
-                    <GetBlog id={this.state.blogId} />
-                    <GetPosts id={this.state.blogId} />
-                </div>
+                {
+                    (this.props.match.params.id === this.props.blog.blogId) &&
+                    <div style={blogStyles}>
+                        <GetBlog />
+                        <GetPosts />
+                        <div id="newPost" style={newPostStyles}>
+                            {this.newPostForm()}
+                        </div>
+                    </div>
+                }
                 <div style={fixedStyles}>
-                    <div style={newPostStyles}>
-                        <h3>Nowy post</h3>
-                        <BlogModel
-                            modelId={this.state.createTimePost}
-                            send={this.sendPostToServer}
-                            model={'post'}
-                        />
-                    </div>
-                    <div style={fixedMenu}>
-                        <Button onClick={this.showHiddenNewPostForm} color="primary">Dodaj post</Button>
-                        <Button onClick={this.deleteBlog} color="danger">Usuń blog</Button>
-                    </div>
+                    <Button onClick={this.showHiddenNewPostForm} color="primary">Dodaj post</Button>
+                    <Button onClick={this.deleteBlog} color="danger">Usuń blog</Button>
                 </div>
             </div>
             );
     }
 }
+
+const mapStateToProps = state => ({
+    ...state
+});
+
+const mapDispatchToProps = dispatch => ({
+    getPosts: (posts) => dispatch(getPosts(posts)),
+    setBlogId: (blogId) => dispatch(setBlogId(blogId))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReadBlog);

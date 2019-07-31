@@ -16,7 +16,7 @@ namespace MotoPasja.Models
         public static async Task UploadImage(IFormFile file, string fileName, string folderName, string modelName)
         {
             var pathToFolder = Path.Combine(Directory.GetCurrentDirectory(),
-                "clientapp/public/images", modelName, folderName);
+                "clientapp/build/images", modelName, folderName);
 
             MyFolder myFolder = new MyFolder(pathToFolder);
             myFolder.IfItDoesNotExistCreateIt();
@@ -34,7 +34,7 @@ namespace MotoPasja.Models
 
         public static void DeleteImage(string fileName, string modelId, string modelName)
         {
-            var pathToFolder = Path.Combine(Directory.GetCurrentDirectory(), "clientApp", "public", "images",
+            var pathToFolder = Path.Combine(Directory.GetCurrentDirectory(), "clientApp", "build", "images",
                 modelName, modelId);
 
             MyFile myFile = new MyFile(pathToFolder, fileName);

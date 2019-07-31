@@ -1,5 +1,6 @@
 ﻿import React from 'react';
 import BlogCard from './Card';
+import './CardStyles.css';
 
 export default class GetBlogs extends React.Component {
     constructor(props) {
@@ -22,7 +23,7 @@ export default class GetBlogs extends React.Component {
     }
 
     componentDidMount() {
-        this.getBlogs();
+        this.getBlogs();   
     }
 
     render() {

@@ -1,8 +1,8 @@
 ﻿import React from 'react';
 import { Container } from 'reactstrap';
-import ReduxNavbar from '../store/actions/navbar';
+import Navbar from '../../src/components/Navbar';
 import { Route, HashRouter } from "react-router-dom";
-import BlogsList from './blog/blogsList/BlogsList';
+import GetBlogs from './blog/blogsList/GetBlogs';
 import ReadBlog from './blog/read/ReadBlog';
 import CreateBlog from './blog/create/CreateBlog';
 
@@ -15,10 +15,10 @@ export default props => (
     <HashRouter>
         <div>
             <div>
-                <ReduxNavbar />
+                <Navbar />
             </div>
             <Container style={containerStyles}>
-                <Route path="/blogs" component={BlogsList} />
+                <Route path="/blogs" component={GetBlogs} />
                 <Route path="/blog/:id" component={ReadBlog} />
                 <Route path="/newBlog" component={CreateBlog} />
             </Container>

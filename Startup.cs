@@ -35,7 +35,7 @@ namespace MotoPasja
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/public";
+                configuration.RootPath = "ClientApp/build";
             });
         }
 

@@ -1,7 +1,8 @@
 ﻿import React from 'react';
 import Blog from './Blog';
+import { connect } from 'react-redux';
 
-export default class GetBlog extends React.Component {
+class GetBlog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -10,7 +11,7 @@ export default class GetBlog extends React.Component {
     }
 
     getBlog = () => {
-        const url = 'blog/GetBlog/?id=' + this.props.id;
+        const url = 'blog/GetBlog/?id=' + this.props.blog.blogId;
         const xhr = new XMLHttpRequest();
         xhr.open('get', url, true);
         xhr.onload = () => {
@@ -41,3 +42,9 @@ export default class GetBlog extends React.Component {
         }
     }
 }
+
+const mapStateToProps = state => ({
+    ...state
+});
+
+export default connect(mapStateToProps)(GetBlog);

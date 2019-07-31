@@ -4,16 +4,31 @@ import "react-lightbox-component/build/css/index.css";
 import RegistrationCRUD from '../../common/information/RegistrationCRUD';
 import $ from 'jquery';
 import BlogModel from '../create/BlogModel';
+import { connect } from 'react-redux';
+import getPosts from '../../../store/actions/post';
+import GetPostsFromServer from '../../../js/Post';
 
-export default class Post extends React.Component {
+class Post extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             images: [],
             edit: false
         };
+        this.getPosts = GetPostsFromServer.bind(this);
     }
 
+    static getDerivedStateFromProps(props, state) {
+        const imgs = [];
+        for (var i = 0; i < props.images.length; i++) {
+            var sr = props.images[i].fileName;
+            imgs.push({ src: sr });
+        }
+        return {
+            images: imgs
+        };
+    }
+    /*
     componentDidMount() {
         const imgs = [];
         for (var i = 0; i < this.props.images.length; i++) {
@@ -24,44 +39,57 @@ export default class Post extends React.Component {
             images: imgs
         });
     }
-
+    */
     deletePost = () => {
         $.ajax({
             url: "post/deletePost/?postId=" + this.props.id,
             method: 'delete',
             success: (result) => {
-                this.props.delete(this.props.id);
+                this.props.post.posts.forEach((item, index, arr) => {
+                    if (item.id == this.props.id) {
+                        arr.splice(index, 1);
+                        this.props.getPosts(arr);
+                        console.log(this.props);
+                    }
+                });
             }
         });
     }
 
     updatePost = (title, contents) => {
-        var post = {
-            id: this.props.id,
-            title: title,
-            contents: contents,
-            blogModelId: this.props.blogModelId
-        };
+        if (title !== this.props.title || contents !== this.props.contents) {
+            var post = {
+                id: this.props.id,
+                title: title,
+                contents: contents,
+                blogModelId: this.props.blogModelId
+            };
 
-        $.ajax({
-            url: "post/updatePost",
-            type: "patch",
-            contentType: "application/json",
-            dataType: "json",
-            data: JSON.stringify(post),
-            success: (data) => {
-                if (data === true) {
-                    this.setState({
-                        edit: false
-                    });
+            $.ajax({
+                url: "post/updatePost",
+                type: "patch",
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify(post),
+                success: (data) => {
+                    if (data === true) {
+                        this.getPosts();
+                        this.setState({
+                            edit: false
+                        });
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            this.setState({
+                edit: false
+            });
+        }
     }
 
     edit = () => {
         this.setState({
-            edit: true
+            edit: !this.state.edit
         });
     }
 
@@ -80,7 +108,10 @@ export default class Post extends React.Component {
                         content={this.props.contents}
                         model={'post'}
                         send={this.updatePost}
-                        />
+                        edit={true}
+                        anuluj={this.edit}
+                    />
+                    <hr />
                 </div>
                 );
         } else {
@@ -106,3 +137,13 @@ export default class Post extends React.Component {
         }
     }
 }
+
+const mapStateToProps = state => ({
+    ...state
+});
+
+const mapDispatchToProps = dispatch => ({
+    getPosts: (posts) => dispatch(getPosts(posts))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Post);

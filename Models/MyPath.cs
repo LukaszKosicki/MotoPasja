@@ -11,7 +11,7 @@ namespace MotoPasja.Models
         public static string GetPath(string model, string folderName)
         {
             return (Path.Combine(
-                    Directory.GetCurrentDirectory(), "clientApp", "public", "images", model, folderName));
+                    Directory.GetCurrentDirectory(), "clientApp", "build", "images", model, folderName));
         }
     }
 }
