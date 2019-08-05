@@ -45,11 +45,15 @@ namespace MotoPasja.Migrations
 
                     b.Property<string>("Author");
 
+                    b.Property<float>("AverageRating");
+
                     b.Property<string>("Contents");
 
                     b.Property<string>("DateOfAddition");
 
                     b.Property<string>("EditingDate");
+
+                    b.Property<int>("NumberOfRatings");
 
                     b.Property<string>("Title");
 
@@ -102,6 +106,29 @@ namespace MotoPasja.Migrations
                     b.ToTable("Posts");
                 });
 
+            modelBuilder.Entity("MotoPasja.Models.Blog.RatingBlogModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Author");
+
+                    b.Property<int>("BlogModelId");
+
+                    b.Property<string>("DateOfAddition");
+
+                    b.Property<string>("EditingDate");
+
+                    b.Property<float>("Rating");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BlogModelId");
+
+                    b.ToTable("RatingBlogModel");
+                });
+
             modelBuilder.Entity("MotoPasja.Models.Blog.BlogImage", b =>
                 {
                     b.HasOne("MotoPasja.Models.Blog.BlogModel")
@@ -122,6 +149,14 @@ namespace MotoPasja.Migrations
                 {
                     b.HasOne("MotoPasja.Models.Blog.BlogModel")
                         .WithMany("Posts")
+                        .HasForeignKey("BlogModelId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MotoPasja.Models.Blog.RatingBlogModel", b =>
+                {
+                    b.HasOne("MotoPasja.Models.Blog.BlogModel")
+                        .WithMany("Ratings")
                         .HasForeignKey("BlogModelId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

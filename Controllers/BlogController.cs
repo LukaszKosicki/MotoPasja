@@ -37,7 +37,7 @@ namespace MotoPasja.Controllers
         [HttpPost]
         public JsonResult CreateBlog([FromBody] BlogModel model)
         {
-            repository.CreateBlog(model);
+            repository.CreateBlog(model, HttpContext.User.Identity.Name);
             return Json(model.Id);
         }
 

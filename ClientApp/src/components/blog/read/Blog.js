@@ -4,6 +4,7 @@ import "react-lightbox-component/build/css/index.css";
 import RegistrationCRUD from '../../common/information/RegistrationCRUD';
 import BlogModel from '../create/BlogModel';
 import $ from 'jquery';
+import RatingStars from '../../common/RatingStars';
 
 export default class Blog extends React.Component {
     constructor(props) {
@@ -12,7 +13,8 @@ export default class Blog extends React.Component {
             images: [],
             title: "",
             content: "",
-            edit: false
+            edit: false,
+            rating: 0
         };
     }
 
@@ -32,6 +34,7 @@ export default class Blog extends React.Component {
             title: this.props.title,
             content: this.props.contents
         });
+        console.log(this.props);
     }
  
     edit = () => {
@@ -58,6 +61,10 @@ export default class Blog extends React.Component {
             title: this.props.title,
             content: this.props.contents
         });
+    }
+
+    onStarClick = (nextValue, prevValue, name) => {
+        this.setState({ rating: nextValue });
     }
 
     updateBlog = (title, contents) => {
@@ -97,6 +104,7 @@ export default class Blog extends React.Component {
         var lightboxDiv = {
             textAlign: 'center'
         };
+    
         if (this.state.edit) {
             return (
                 <div>
@@ -131,6 +139,13 @@ export default class Blog extends React.Component {
                             <Lightbox
                                 images={this.state.images} />
                         </div>
+                        <RatingStars 
+                            count={5}
+                            size={30}
+                            color2={'#ffd700'}
+                            averageRating={this.props.averageRating}
+                            numberOfRatings={this.props.numberOfRatings}
+                            />
                     </div>
                     <hr />
                 </div>

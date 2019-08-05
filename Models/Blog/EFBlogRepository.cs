@@ -18,7 +18,7 @@ namespace MotoPasja.Models.Blog
 
         public IQueryable<BlogModel> Blogs => context.Blogs;
 
-        public void CreateBlog(BlogModel model)
+        public void CreateBlog(BlogModel model, string userName)
         {
             //Po wprowadzeniu kont użytkowników należy zastąpić nickiem zarejestrowanego użytkownika
             model.Author = "GalAnonim";

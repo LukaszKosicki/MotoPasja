@@ -17,7 +17,9 @@ namespace MotoPasja.Migrations
                     Title = table.Column<string>(nullable: true),
                     Contents = table.Column<string>(nullable: true),
                     DateOfAddition = table.Column<string>(nullable: true),
-                    EditingDate = table.Column<string>(nullable: true)
+                    EditingDate = table.Column<string>(nullable: true),
+                    AverageRating = table.Column<float>(nullable: false),
+                    NumberOfRatings = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -70,6 +72,29 @@ namespace MotoPasja.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RatingBlogModel",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Rating = table.Column<float>(nullable: false),
+                    Author = table.Column<string>(nullable: true),
+                    DateOfAddition = table.Column<string>(nullable: true),
+                    EditingDate = table.Column<string>(nullable: true),
+                    BlogModelId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RatingBlogModel", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RatingBlogModel_Blogs_BlogModelId",
+                        column: x => x.BlogModelId,
+                        principalTable: "Blogs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PostImage",
                 columns: table => new
                 {
@@ -104,6 +129,11 @@ namespace MotoPasja.Migrations
                 name: "IX_Posts_BlogModelId",
                 table: "Posts",
                 column: "BlogModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RatingBlogModel_BlogModelId",
+                table: "RatingBlogModel",
+                column: "BlogModelId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -113,6 +143,9 @@ namespace MotoPasja.Migrations
 
             migrationBuilder.DropTable(
                 name: "PostImage");
+
+            migrationBuilder.DropTable(
+                name: "RatingBlogModel");
 
             migrationBuilder.DropTable(
                 name: "Posts");
