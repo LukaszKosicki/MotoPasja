@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using MotoPasja.Models;
 using MotoPasja.Models.Blog;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using MotoPasja.Models.Identity;
 
 namespace MotoPasja
 {
@@ -26,6 +28,14 @@ namespace MotoPasja
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(
                 Configuration["Data:MotoPasjaDatabase:ConnectionString"]));
+
+            services.AddDbContext<AppIdentityDbContext>(options =>
+            options.UseSqlServer(
+                Configuration["Data:MotoPasjaIdentity:ConnectionString"]));
+
+            services.AddIdentity<AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppIdentityDbContext>()
+                .AddDefaultTokenProviders();
         
             services.AddTransient<IBlogRepository, EFBlogRepository>();
             services.AddTransient<IPostRepository, EFPostRepository>();
@@ -57,6 +67,7 @@ namespace MotoPasja
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
@@ -75,6 +86,7 @@ namespace MotoPasja
                 }
             });
             TrialData.EnsureBlogsAndPosts(app);
+            TrialData.EnsureUsers(app);
         }
     }
 }

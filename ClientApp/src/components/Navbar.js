@@ -34,16 +34,10 @@ export default class Example extends React.Component {
         return (
             <div>
                 <Navbar color="light" light expand="md">
-                    <NavbarBrand href="/">reactstrap</NavbarBrand>
+                    <NavbarBrand href="/">MotoPasja</NavbarBrand>
                     <NavbarToggler onClick={this.toggle} />
                     <Collapse isOpen={this.state.isOpen} navbar>
                         <Nav className="ml-auto" navbar>
-                            <NavItem>
-                                <NavLink tag={Link} to="/blogs">AAAA</NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink href="https://github.com/reactstrap/reactstrap">GitHub</NavLink>
-                            </NavItem>
                             <UncontrolledDropdown nav inNavbar>
                                 <DropdownToggle nav caret>
                                     Blog
@@ -61,6 +55,12 @@ export default class Example extends React.Component {
                                     </DropdownItem>
                                 </DropdownMenu>
                             </UncontrolledDropdown>
+                            <NavItem>
+                                <NavLink tag={Link} to="/login">Logowanie</NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink tag={Link} to="/register">Rejestracja</NavLink>
+                            </NavItem>
                         </Nav>
                     </Collapse>
                 </Navbar>

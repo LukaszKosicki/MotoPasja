@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using MotoPasja.Models.Blog;
 using System.Globalization;
+using Microsoft.AspNetCore.Identity;
+using MotoPasja.Models.Identity;
 
 namespace MotoPasja.Models
 {
@@ -282,6 +284,38 @@ namespace MotoPasja.Models
                     });
             }
             context.SaveChanges();
+        }
+
+        public static async void EnsureUsers(IApplicationBuilder app)
+        {
+            UserManager<AppUser> userManager = app.ApplicationServices
+                .GetRequiredService<UserManager<AppUser>>();
+
+            const string adminName = "admin";
+            const string adminPassword = "Admin123!";
+
+            AppUser admin = await userManager.FindByNameAsync(adminName);
+            if (admin == null)
+            {
+                admin = new AppUser
+                {
+                    UserName = adminName
+                };
+                await userManager.CreateAsync(admin, adminPassword);
+            }
+
+            const string userName = "user";
+            const string userPassword = "User123!";
+
+            AppUser user = await userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                user = new AppUser
+                {
+                    UserName = userName
+                };
+                await userManager.CreateAsync(user, userPassword);
+            }
         }
     }
 }
