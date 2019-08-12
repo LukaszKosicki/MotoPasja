@@ -4,6 +4,7 @@ import $ from 'jquery';
 import Email from "../../js/Email";
 import Text from "../../js/Text";
 import './FormStyles.css';
+import { connect } from 'react-redux';
 
 export default class Login extends React.Component {
     constructor(props) {
@@ -66,8 +67,8 @@ export default class Login extends React.Component {
 
     login = () => {
         var loginModel = {
-            userName: this.state.email,
-            password: this.state.password
+            email: this.state.email["value"],
+            password: this.state.password["value"]
         };
 
         if (this.state.email["valid"] && this.state.password["valid"]) {
@@ -78,7 +79,7 @@ export default class Login extends React.Component {
                 dataType: "json",
                 data: JSON.stringify(loginModel),
                 success: (data) => {
-                    console.log(data);
+                    localStorage.setItem("motoPasjaToken", data);
                 }
             });
         }
@@ -121,3 +122,4 @@ export default class Login extends React.Component {
             );
     }
 }
+

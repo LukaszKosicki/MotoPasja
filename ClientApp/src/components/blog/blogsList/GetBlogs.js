@@ -1,8 +1,10 @@
 ﻿import React from 'react';
 import BlogCard from './Card';
 import './CardStyles.css';
+import $ from "jquery";
+import { connect } from 'react-redux';
 
-export default class GetBlogs extends React.Component {
+class GetBlogs extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -11,6 +13,17 @@ export default class GetBlogs extends React.Component {
     }
 
     getBlogs = () => {
+        $.ajax({
+            url: "blog/getBlogs",
+            method: "get",
+            headers: { "Authorization": "Bearer " + localStorage.getItem("motoPasjaToken") },
+            success: (result) => {
+                this.setState({
+                    blogs: result
+                });
+            }
+        });
+        /*
         const xhr = new XMLHttpRequest();
         xhr.open('get', 'blog/GetBlogs', true);
         xhr.onload = () => {
@@ -19,11 +32,12 @@ export default class GetBlogs extends React.Component {
                 blogs: data
             });
         };
-        xhr.send();
+        xhr.send(); */
     }
 
     componentDidMount() {
-        this.getBlogs();   
+        this.getBlogs();
+        console.log(this.props);
     }
 
     render() {
@@ -49,3 +63,9 @@ export default class GetBlogs extends React.Component {
         
     }
 }
+
+const mapStateToProps = state => ({
+    ...state
+});
+
+export default connect(mapStateToProps)(GetBlogs);

@@ -6,6 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using MotoPasja.Models.Identity;
+using Microsoft.Extensions.Options;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 namespace MotoPasja.Controllers
 {
@@ -13,12 +18,14 @@ namespace MotoPasja.Controllers
     {
         private UserManager<AppUser> userManager;
         private SignInManager<AppUser> signInManager;
+        private readonly AppSettings appSettings;
 
         public AccountController(UserManager<AppUser> userMgr, 
-            SignInManager<AppUser> signMgr)
+            SignInManager<AppUser> signMgr, IOptions<AppSettings> options)
         {
             userManager = userMgr;
             signInManager = signMgr;
+            appSettings = options.Value;
         }
 
         [HttpPost]
@@ -70,11 +77,26 @@ namespace MotoPasja.Controllers
 
                 if(user != null)
                 {
+                    var tokenHandler = new JwtSecurityTokenHandler();
+                    var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+                    var tokenDescriptor = new SecurityTokenDescriptor
+                    {
+                        Subject = new ClaimsIdentity(new Claim[]
+                        {
+                            new Claim(ClaimTypes.Name, user.Id)
+                        }),
+                        Expires = DateTime.UtcNow.AddDays(7),
+                        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                    };
+
+                    var token = tokenHandler.CreateToken(tokenDescriptor);
+
+
                     await signInManager.SignOutAsync();
                     if ((await signInManager.PasswordSignInAsync(user,
                         model.Password, false, false)).Succeeded)
                     {
-                        return Json(user);
+                        return Json(tokenHandler.WriteToken(token));
                     }
                     else
                     {

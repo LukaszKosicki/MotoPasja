@@ -46,8 +46,8 @@ export default class Example extends React.Component {
                                     <DropdownItem tag={Link} to="/blogs">
                                         Wszystkie blogi
                                 </DropdownItem>
-                                    <DropdownItem tag={Link} to="/newBlog">
-                                        Nowy blog
+                                <DropdownItem tag={Link} to="/newBlog">
+                                    Nowy blog
                                 </DropdownItem>
                                 <DropdownItem divider />
                                     <DropdownItem>

@@ -2,6 +2,7 @@
 import BlogModel from './BlogModel';
 import $ from 'jquery';
 import { Redirect } from 'react-router-dom';
+import { connect } from "react-redux";
 
 export default class CreateBlog extends React.Component {
     constructor(props) {
@@ -39,6 +40,7 @@ export default class CreateBlog extends React.Component {
             type: "post",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
+            headers: { "Authorization": "Bearer " + localStorage.getItem("motoPasjaToken") },
             data: JSON.stringify(blog),
             success: (data) => {
                 this.redirectToBlog(data);
@@ -61,6 +63,5 @@ export default class CreateBlog extends React.Component {
                 />
             </div>
             );
-    }
-    
+    }   
 }

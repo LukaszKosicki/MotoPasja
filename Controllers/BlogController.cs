@@ -8,9 +8,11 @@ using MotoPasja.Models.Blog;
 using MotoPasja.Models;
 using System.IO;
 using System.Globalization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MotoPasja.Controllers
 {
+    [Authorize]
     public class BlogController : Controller
     {
         private IBlogRepository repository;
@@ -20,7 +22,8 @@ namespace MotoPasja.Controllers
             this.repository = repo;
         }
 
-        [HttpGet]
+        [Authorize]
+        [AllowAnonymous]
         public JsonResult GetBlogs()
         {
             //zmienić, żeby pobierało tylko jedno zdjęcie (większa ilość jest zbędna)
@@ -28,12 +31,13 @@ namespace MotoPasja.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public JsonResult GetBlog(int id)
         {
             return Json(repository.Blogs.Include(b => b.Images).
                 FirstOrDefault(b => b.Id == id));
         }
-
+            
         [HttpPost]
         public JsonResult CreateBlog([FromBody] BlogModel model)
         {
