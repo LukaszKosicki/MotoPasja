@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MotoPasja.Models.Blog;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MotoPasja.Controllers
 {
+    [Authorize]
     public class PostController : Controller
     {
         private IPostRepository repository;
@@ -15,6 +17,7 @@ namespace MotoPasja.Controllers
         public PostController(IPostRepository repo) =>
             this.repository = repo;
 
+        [AllowAnonymous]
         public JsonResult GetPosts(int blogId)
         {
             return Json(repository.Posts.Include(p => p.Images)
@@ -31,14 +34,14 @@ namespace MotoPasja.Controllers
         [HttpDelete]
         public JsonResult DeletePost(int postId)
         {
-            return Json(repository.DeletePost(postId));
+            return Json(repository.DeletePost(postId, HttpContext.User.Identity.Name));
 
         }
 
         [HttpPatch]
         public JsonResult UpdatePost([FromBody] PostModel model)
         {
-            return Json(repository.UpdatePost(model));
+            return Json(repository.UpdatePost(model, HttpContext.User.Identity.Name));
         }
     }
 }

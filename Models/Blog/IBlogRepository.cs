@@ -10,7 +10,7 @@ namespace MotoPasja.Models.Blog
     {
         IQueryable<BlogModel> Blogs { get; }
         void CreateBlog(BlogModel model, string userName);
-        bool DeleteBlog(int blogId);
-        bool UpdateBlog(BlogModel model);
+        bool DeleteBlog(int blogId, string userName);
+        bool UpdateBlog(BlogModel model, string userName);
     }
 }

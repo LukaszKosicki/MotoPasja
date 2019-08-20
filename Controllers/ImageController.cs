@@ -8,9 +8,11 @@ using MotoPasja.Models;
 using System.IO;
 using MotoPasja.Models.Blog;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MotoPasja.Controllers
 {
+    [Authorize]
     public class ImageController : Controller
     {
         private IImageRepository repository;
@@ -32,7 +34,8 @@ namespace MotoPasja.Controllers
 
             if (int.TryParse(modelId,out numberId))
             {
-                repository.AddImageToModel(numberId, fileName + Path.GetExtension(Request.Form.Files[0].FileName), model);
+                repository.AddImageToModel(numberId, fileName + Path.GetExtension(Request.Form.Files[0].FileName),
+                    model, HttpContext.User.Identity.Name);
             }
         }
 
@@ -47,7 +50,7 @@ namespace MotoPasja.Controllers
             
             if (int.TryParse(modelId,out numberId))
             {
-                repository.DeleteImage(numberId, fileName, model);
+                repository.DeleteImage(numberId, fileName, model, HttpContext.User.Identity.Name);
             }
         }
     }

@@ -22,7 +22,7 @@ namespace MotoPasja.Controllers
             this.repository = repo;
         }
 
-        [Authorize]
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult GetBlogs()
         {
@@ -48,13 +48,13 @@ namespace MotoPasja.Controllers
         [HttpDelete]
         public JsonResult Delete(int blogId)
         {
-            return Json(repository.DeleteBlog(blogId));
+            return Json(repository.DeleteBlog(blogId, HttpContext.User.Identity.Name));
         }
 
         [HttpPatch]
         public JsonResult UpdateBlog([FromBody] BlogModel model)
         {
-            return Json(repository.UpdateBlog(model));
+            return Json(repository.UpdateBlog(model, HttpContext.User.Identity.Name));
         }
     }
 }

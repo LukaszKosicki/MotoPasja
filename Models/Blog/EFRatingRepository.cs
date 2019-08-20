@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using MotoPasja.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MotoPasja.Models.Blog
 {
+    [Authorize]
     public class EFRatingRepository : IRatingRepository
     {
         private ApplicationDbContext context;
@@ -22,7 +24,7 @@ namespace MotoPasja.Models.Blog
 
             string data = MyDate.GetDate_ddmmrrrr_ggmm_Format();
 
-            if (false)
+            if (rating != null && rating.Author == userName)
             {
                 rating.Rating = model.Rating;
                 rating.EditingDate = data;
@@ -48,6 +50,7 @@ namespace MotoPasja.Models.Blog
             return true;
         }
 
+        [AllowAnonymous]
         public float GetAverageRating(int blogId)
         {
             return (context.Blogs.FirstOrDefault(b => b.Id == blogId).AverageRating);

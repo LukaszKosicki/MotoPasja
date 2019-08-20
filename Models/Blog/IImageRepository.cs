@@ -8,7 +8,7 @@ namespace MotoPasja.Models.Blog
 {
     public interface IImageRepository
     {
-        void DeleteImage(int modelId, string fileName, string model);
-        void AddImageToModel(int modelId, string fileName, string model);
+        void DeleteImage(int modelId, string fileName, string model, string userName);
+        void AddImageToModel(int modelId, string fileName, string model, string userName);
     }
 }

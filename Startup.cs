@@ -51,7 +51,7 @@ namespace MotoPasja
 
             var appSettings = appSettingsSection.Get<AppSettings>();
             var secret = Encoding.ASCII.GetBytes(appSettings.Secret);
-            services.AddAuthentication(a =>
+        /*    services.AddAuthentication(a =>
             {
                 a.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 a.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -66,7 +66,8 @@ namespace MotoPasja
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
-            });
+            });*/
+
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {

@@ -28,9 +28,7 @@ namespace MotoPasja.Models.Blog
             PathCRUD.AddImageToNewRegistration(model, "post");
 
             model.DateOfAddition = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE"));
-            model.EditingDate = model.DateOfAddition;
-
-            
+            model.EditingDate = model.DateOfAddition;       
 
             blog.EditingDate = model.DateOfAddition;
             blog.Posts.Add((PostModel)model);
@@ -40,10 +38,10 @@ namespace MotoPasja.Models.Blog
             return true;
         }
 
-        public bool DeletePost(int postId)
+        public bool DeletePost(int postId, string userName)
         {
             PostModel post = context.Posts.FirstOrDefault(p => p.Id == postId);
-            if (post != null)
+            if (post != null && post.Author == userName)
             {
                 context.Posts.Remove(post);
                 context.SaveChanges();
@@ -52,10 +50,10 @@ namespace MotoPasja.Models.Blog
             return false;
         }
 
-        public bool UpdatePost(PostModel model)
+        public bool UpdatePost(PostModel model, string userName)
         {
             BlogModel blog = context.Blogs.Include(b => b.Posts).FirstOrDefault(b => b.Id == model.BlogModelId);
-            if (blog != null)
+            if (blog != null && blog.Author == userName)
             {
                 PostModel post = blog.Posts.FirstOrDefault(p => p.Id == model.Id);
 

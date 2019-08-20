@@ -20,8 +20,7 @@ namespace MotoPasja.Models.Blog
 
         public void CreateBlog(BlogModel model, string userName)
         {
-            //Po wprowadzeniu kont użytkowników należy zastąpić nickiem zarejestrowanego użytkownika
-            model.Author = "GalAnonim";
+            model.Author = userName;
 
             //pierwszy zapis bloga, w celu uzyskania ID
             context.Blogs.Add(model);
@@ -38,38 +37,34 @@ namespace MotoPasja.Models.Blog
             context.SaveChanges();   
         }
 
-        public bool DeleteBlog(int blogId)
+        public bool DeleteBlog(int blogId, string userName)
         {
-            try
+            BlogModel blog = context.Blogs.FirstOrDefault(b => b.Id == blogId);
+            if (blog.Author == userName)
             {
-                context.Blogs.Remove(context.Blogs.FirstOrDefault(b => b.Id == blogId));
+                context.Blogs.Remove(blog);
                 context.SaveChanges();
                 return true;
             }
-            catch
+            else
             {
                 return false;
             }
         }
 
-        public bool UpdateBlog(BlogModel model)
+        public bool UpdateBlog(BlogModel model, string userName)
         {
             var blog = context.Blogs.FirstOrDefault(b => b.Id == model.Id);
-            if (blog != null)
+            if (blog != null && blog.Author == userName)
             {
                 blog.EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE"));
                 blog.Contents = model.Contents;
                 blog.Title = model.Title;
-                try
-                {
-                    context.Blogs.Update(blog);
-                    context.SaveChanges();
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
+
+                context.Blogs.Update(blog);
+                context.SaveChanges();
+
+                return true;
             }
             return false;
         }

@@ -19,12 +19,12 @@ namespace MotoPasja.Models.Blog
             this.context = context;
         }
 
-        public void DeleteImage(int modelId, string fileName, string model)
+        public void DeleteImage(int modelId, string fileName, string model, string userName)
         {
             if(model == "blog")
             {
                 var blog = context.Blogs.Include(b => b.Images).FirstOrDefault(b => b.Id == modelId);
-                if (blog != null)
+                if (blog != null && blog.Author == userName)
                 {
                     blog.EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE"));
                     blog.Images.Remove(blog.Images.FirstOrDefault(i => i.FileName.IndexOf(fileName) != -1));
@@ -35,7 +35,7 @@ namespace MotoPasja.Models.Blog
             else if (model == "post")
             {
                 var post = context.Posts.Include(p => p.Images).FirstOrDefault(p => p.Id == modelId);
-                if (post != null)
+                if (post != null && post.Author == userName)
                 {
                     var blog = context.Blogs.Include(b => b.Posts).ThenInclude(p => p.Images).FirstOrDefault(b => b.Id == post.BlogModelId);
                     blog.EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE"));
@@ -47,13 +47,13 @@ namespace MotoPasja.Models.Blog
             }
         }
 
-        public void AddImageToModel(int modelId, string fileName, string model)
+        public void AddImageToModel(int modelId, string fileName, string model, string userName)
         {
             if (model == "blog")
             {
                 var blog = context.Blogs.Include(b => b.Images).FirstOrDefault(b => b.Id == modelId);
                 
-                if (blog != null)
+                if (blog != null && blog.Author == userName)
                 {
                     blog.EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE"));
                     if (blog.Images == null) blog.Images = new List<BlogImage>();
@@ -73,7 +73,7 @@ namespace MotoPasja.Models.Blog
             else if (model == "post")
             {
                 var post = context.Posts.Include(p => p.Images).FirstOrDefault(p => p.Id == modelId);
-                if (post != null)
+                if (post != null && post.Author == userName)
                 {
                     var blog = context.Blogs.Include(b => b.Posts).FirstOrDefault(b => b.Id == post.BlogModelId);
                     blog.EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE"));
