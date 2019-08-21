@@ -13,8 +13,10 @@ import {
     DropdownItem
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { connect } from "react-redux";
+import { notLogged } from "../store/actions/user";
 
-export default class Example extends React.Component {
+class Example extends React.Component {
     constructor(props) {
         super(props);
 
@@ -24,10 +26,16 @@ export default class Example extends React.Component {
         };
     }
 
-    toggle() {
+    toggle () {
         this.setState({
             isOpen: !this.state.isOpen
         });
+    }
+
+    logout = () => {
+        fetch("account/logout")
+            .then(this.props.notLogged());
+        console.log(this.props);
     }
 
     render() {
@@ -55,12 +63,19 @@ export default class Example extends React.Component {
                                     </DropdownItem>
                                 </DropdownMenu>
                             </UncontrolledDropdown>
-                            <NavItem>
-                                <NavLink tag={Link} to="/login">Logowanie</NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink tag={Link} to="/register">Rejestracja</NavLink>
-                            </NavItem>
+                            {!this.props.isOnline &&
+                                <NavItem>
+                                    <NavLink tag={Link} to="/login">Logowanie</NavLink>
+                                </NavItem>}
+                            {!this.props.isOnline &&
+                                <NavItem>
+                                    <NavLink tag={Link} to="/register">Rejestracja</NavLink>
+                                </NavItem>}
+                            {this.props.isOnline &&
+                                <NavItem>
+                                    <NavLink onClick={this.logout}>Wyloguj</NavLink>
+                                </NavItem>
+                            }
                         </Nav>
                     </Collapse>
                 </Navbar>
@@ -68,3 +83,13 @@ export default class Example extends React.Component {
         );
     }
 }
+
+const mapStateToProps = state => ({
+    isOnline: state.user.isOnline
+});
+
+const mapDispatchToProps = dispatch => ({
+    notLogged: () => dispatch(notLogged())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Example);

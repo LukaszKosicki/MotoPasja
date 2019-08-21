@@ -5,8 +5,8 @@ import RegistrationCRUD from '../../common/information/RegistrationCRUD';
 import $ from 'jquery';
 import BlogModel from '../create/BlogModel';
 import { connect } from 'react-redux';
-import getPosts from '../../../store/actions/post';
-import GetPostsFromServer from '../../../js/Post';
+//import getPosts from '../../../store/actions/post';
+//import GetPostsFromServer from '../../../js/Post';
 
 class Post extends React.Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class Post extends React.Component {
             images: [],
             edit: false
         };
-        this.getPosts = GetPostsFromServer.bind(this);
+     //   this.getPosts = GetPostsFromServer.bind(this);
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -48,7 +48,7 @@ class Post extends React.Component {
                 this.props.post.posts.forEach((item, index, arr) => {
                     if (item.id == this.props.id) {
                         arr.splice(index, 1);
-                        this.props.getPosts(arr);
+                  //      this.props.getPosts(arr);
                         console.log(this.props);
                     }
                 });
@@ -73,7 +73,7 @@ class Post extends React.Component {
                 data: JSON.stringify(post),
                 success: (data) => {
                     if (data === true) {
-                        this.getPosts();
+                    //    this.getPosts();
                         this.setState({
                             edit: false
                         });
@@ -124,6 +124,7 @@ class Post extends React.Component {
                             "Ostatnia aktywność: " + this.props.editingDate]}
                             delete={this.deletePost}
                             edit={this.edit}
+                            isAuthor={this.props.isAuthor}
                         />
                         <h2>{this.props.title}</h2>
                         <div style={contentsDiv}>
@@ -143,7 +144,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    getPosts: (posts) => dispatch(getPosts(posts))
+  //  getPosts: (posts) => dispatch(getPosts(posts))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Post);

@@ -5,8 +5,9 @@ import Email from "../../js/Email";
 import Text from "../../js/Text";
 import './FormStyles.css';
 import { connect } from 'react-redux';
+import { isLogged } from "../../store/actions/user";
 
-export default class Login extends React.Component {
+class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -79,7 +80,10 @@ export default class Login extends React.Component {
                 dataType: "json",
                 data: JSON.stringify(loginModel),
                 success: (data) => {
-                    localStorage.setItem("motoPasjaToken", data);
+                    this.props.isLogged(data);
+                    if (this.props.history.location.pathname == "/login") {
+                        this.props.history.push("/");
+                    }
                 }
             });
         }
@@ -122,4 +126,18 @@ export default class Login extends React.Component {
             );
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        ...state
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        isLogged: (user) => dispatch(isLogged(user))
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
 

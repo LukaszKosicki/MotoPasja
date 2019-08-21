@@ -1,6 +1,8 @@
 ﻿import React from 'react';
 import Blog from './Blog';
 import { connect } from 'react-redux';
+import LoadingPage from '../../common/LoadingPage';
+import NoData from "../../common/NoData";
 
 class GetBlog extends React.Component {
     constructor(props) {
@@ -16,6 +18,7 @@ class GetBlog extends React.Component {
         xhr.open('get', url, true);
         xhr.onload = () => {
             const data = JSON.parse(xhr.responseText);
+            this.props.checkAuthor(data.author);
             this.setState({
                 blog: data
             });
@@ -32,12 +35,17 @@ class GetBlog extends React.Component {
             return (
                 <Blog
                     {...this.state.blog}
-                    getBlog={this.getBlog} />
+                    getBlog={this.getBlog}
+                    isAuthor={this.props.isAuthor}
+                />
             );
-        }
-        else {
+        } else if (this.state.blog == null) {
             return (
-                <h1>brak</h1>
+                <LoadingPage />
+            );
+        } else {
+            return (
+                <NoData />
                 );
         }
     }

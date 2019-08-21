@@ -4,9 +4,8 @@ import GetPosts from './GetPosts';
 import { Button } from 'reactstrap';
 import $ from 'jquery';
 import BlogModel from '../create/BlogModel';
-import GetPostsFromServer from '../../../js/Post';
 import { connect } from 'react-redux';
-import getPosts from '../../../store/actions/post';
+//import getPosts from '../../../store/actions/post';
 import setBlogId from '../../../store/actions/blog';
 
 class ReadBlog extends React.Component {
@@ -14,9 +13,9 @@ class ReadBlog extends React.Component {
         super(props);
         this.state = {
             createTimePost: null,
-            displayAddPostForm: 'none'
+            displayAddPostForm: 'none',
+            isAuthor: false
         };
-        this.getPosts = GetPostsFromServer.bind(this);
     }
 
     componentDidMount() {
@@ -26,6 +25,18 @@ class ReadBlog extends React.Component {
         this.setState({
             createTimePost: fullTime,
         });
+    }
+
+    checkAuthor = (author) => {
+        if (this.props.user.isOnline && author == this.props.user.user.UserName) {
+            this.setState({
+                isAuthor: true
+            });
+        } else {
+            this.setState({
+                isAuthor: false
+            });
+        }
     }
 
     deleteBlog = () => {
@@ -67,7 +78,7 @@ class ReadBlog extends React.Component {
             data: JSON.stringify(post),
             success: (data) => {
                 this.showHiddenNewPostForm();
-                this.getPosts();
+         
             }
         });
     };
@@ -81,15 +92,11 @@ class ReadBlog extends React.Component {
                         modelId={this.state.createTimePost}
                         send={this.sendPostToServer}
                         model={'post'}
-                        anuluj={this.cancel}
+                        anuluj={this.showHiddenNewPostForm}
                     />
                 </div>
             );
         }
-    }
-
-    cancel = () => {
-        this.showHiddenNewPostForm();
     }
 
     render() {
@@ -118,17 +125,26 @@ class ReadBlog extends React.Component {
                 {
                     (this.props.match.params.id === this.props.blog.blogId) &&
                     <div style={blogStyles}>
-                        <GetBlog />
-                        <GetPosts />
-                        <div id="newPost" style={newPostStyles}>
-                            {this.newPostForm()}
-                        </div>
+                        <GetBlog
+                            checkAuthor={this.checkAuthor}
+                            isAuthor={this.state.isAuthor}
+                        />
+                        <GetPosts
+                            isAuthor={this.state.isAuthor}
+                        />
+                        {this.state.isAuthor &&
+                            <div id="newPost" style={newPostStyles}>
+                                {this.newPostForm()}
+                            </div>
+                        }
                     </div>
                 }
-                <div style={fixedStyles}>
-                    <Button onClick={this.showHiddenNewPostForm} color="primary">Dodaj post</Button>
-                    <Button onClick={this.deleteBlog} color="danger">Usuń blog</Button>
-                </div>
+                {this.state.isAuthor &&
+                    <div style={fixedStyles}>
+                        <Button onClick={this.showHiddenNewPostForm} color="primary">Dodaj post</Button>
+                        <Button onClick={this.deleteBlog} color="danger">Usuń blog</Button>
+                    </div>
+                }
             </div>
             );
     }
@@ -139,7 +155,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    getPosts: (posts) => dispatch(getPosts(posts)),
+  //  getPosts: (posts) => dispatch(getPosts(posts)),
     setBlogId: (blogId) => dispatch(setBlogId(blogId))
 });
 

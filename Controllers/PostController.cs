@@ -17,6 +17,7 @@ namespace MotoPasja.Controllers
         public PostController(IPostRepository repo) =>
             this.repository = repo;
 
+        [HttpGet]
         [AllowAnonymous]
         public JsonResult GetPosts(int blogId)
         {

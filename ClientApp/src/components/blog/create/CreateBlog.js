@@ -1,10 +1,11 @@
 ﻿import React from 'react';
 import BlogModel from './BlogModel';
 import $ from 'jquery';
-import { Redirect } from 'react-router-dom';
+import { Alert } from "reactstrap";
 import { connect } from "react-redux";
+import Login from "../../account/Login";
 
-export default class CreateBlog extends React.Component {
+class CreateBlog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -52,16 +53,33 @@ export default class CreateBlog extends React.Component {
     }
 
     render() {
-        return (
-            <div>
-                <h1>Nowy blog</h1>
-                <BlogModel
-                    send={this.sendBlogToServer}
-                    anuluj={this.redirectToBlogsList}
-                    modelId={this.state.createTime}
-                    model={'blog'}
-                />
-            </div>
+        if (this.props.isOnline) {
+            return (
+                <div>
+                    <h1>Nowy blog</h1>
+                    <BlogModel
+                        send={this.sendBlogToServer}
+                        anuluj={this.redirectToBlogsList}
+                        modelId={this.state.createTime}
+                        model={'blog'}
+                    />
+                </div>
             );
+        } else {
+            return (
+                <div>
+                    <Alert color="warning">
+                        Dodać blog mogą tylko zalogowani użytkownicy!
+                    </Alert>
+                    <Login />
+                </div>
+                );
+        }
     }   
 }
+
+const mapStateToProps = state => ({
+    isOnline: state.user.isOnline
+});
+
+export default connect(mapStateToProps)(CreateBlog);

@@ -2,28 +2,17 @@
 import Post from './Post';
 import getPosts from '../../../store/actions/post';
 import { connect } from 'react-redux';
-import GetPostsFromServer from '../../../js/Post';
+import { getPostsFromServer } from "../../../store/actions/post";
+import LoadingPage from "../../common/LoadingPage";
+import NoData from "../../common/NoData";
 
 class GetPosts extends React.Component {
     constructor(props) {
         super(props);
-        this.getPosts = GetPostsFromServer.bind(this);
     }
-    /*
-    getPosts = () => {
-        const url = 'post/getPosts/?blogId=' + this.props.id;
-        const xhr = new XMLHttpRequest();
-        xhr.open('get', url, true);
-        xhr.onload = () => {
-            const data = JSON.parse(xhr.responseText);
-            this.props.getPosts(data);
-            console.log(this.props);
-        };
-        xhr.send();
-    }
-    */
+   
     componentDidMount() {
-        this.getPosts();
+        this.props.getPosts(this.props.blog.blogId);
     }
 
     render() {
@@ -35,13 +24,18 @@ class GetPosts extends React.Component {
                         <Post key={'post' + (i++)}
                             {...this.props.post.posts[type]}
                             delete={this.deletePost}
+                            isAuthor={this.props.isAuthor}
                         />
                     );
                 })
             );
+        } else if (this.props.post.posts == null) {
+            return (
+                <LoadingPage />
+            );
         } else {
             return (
-                <h1>brak</h1>
+                <NoData />
                 );
         }
     }
@@ -52,7 +46,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    getPosts: (posts) => dispatch(getPosts(posts))
+    getPosts: (blogId) => dispatch(getPostsFromServer(blogId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GetPosts);

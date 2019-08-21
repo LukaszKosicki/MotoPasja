@@ -18,14 +18,12 @@ namespace MotoPasja.Controllers
     {
         private UserManager<AppUser> userManager;
         private SignInManager<AppUser> signInManager;
-        private readonly AppSettings appSettings;
 
         public AccountController(UserManager<AppUser> userMgr, 
             SignInManager<AppUser> signMgr, IOptions<AppSettings> options)
         {
             userManager = userMgr;
             signInManager = signMgr;
-            appSettings = options.Value;
         }
 
         [HttpPost]
@@ -70,6 +68,7 @@ namespace MotoPasja.Controllers
       //  [ValidateAntiForgeryToken]
         public async Task<JsonResult> Login([FromBody] LoginModel model)
         {
+            Dictionary<string, string> answer = new Dictionary<string, string>();
             if (ModelState.IsValid)
             {
                 AppUser user =
@@ -77,6 +76,7 @@ namespace MotoPasja.Controllers
 
                 if(user != null)
                 {
+                    /*
                     var tokenHandler = new JwtSecurityTokenHandler();
                     var key = Encoding.ASCII.GetBytes(appSettings.Secret);
                     var tokenDescriptor = new SecurityTokenDescriptor
@@ -90,28 +90,42 @@ namespace MotoPasja.Controllers
                     };
 
                     var token = tokenHandler.CreateToken(tokenDescriptor);
-
+                   */
 
                     await signInManager.SignOutAsync();
+             
                     if ((await signInManager.PasswordSignInAsync(user,
                         model.Password, false, false)).Succeeded)
                     {
-                        return Json(tokenHandler.WriteToken(token));
+                        Dictionary<string, string> userData = new Dictionary<string, string>();
+                        userData.Add(nameof(user.UserName), user.UserName);
+                        userData.Add(nameof(user.Email), user.Email);
+
+                        return Json(userData);
                     }
                     else
                     {
-                        return Json(false);
+                        answer.Add("error", "Nieprawidłowa nazwa użytkownika lub hasło!");
+                        return Json(answer);
                     }
                 }
                 else
                 {
+                    answer.Add("error", $"Użytkownik {model.Email} nie istnieje!");
                     return Json(false);
                 }
             }
             else 
             {
-                return Json(false);
+                answer.Add("error", "Wprowadzone dane są nieprawidłowe. Proszę Cię nie włamuj się!");
+                return Json(answer);
             } 
+        }
+
+        public async Task<JsonResult> Logout()
+        {
+            await signInManager.SignOutAsync();
+            return Json(true);
         }
     }
 }

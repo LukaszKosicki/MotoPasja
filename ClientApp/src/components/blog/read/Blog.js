@@ -131,6 +131,7 @@ export default class Blog extends React.Component {
                         "Data dodania: " + this.props.dateOfAddition,
                         "Ostatnia aktywność: " + this.props.editingDate]}
                         edit={this.edit}
+                        isAuthor={this.props.isAuthor}
                     />
                     <h1>{this.props.title}</h1>
                     <p>{this.props.contents}</p>
