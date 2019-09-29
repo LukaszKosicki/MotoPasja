@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using MotoPasja.Models;
+using MotoPasja.Models.Identity;
 
 namespace MotoPasja.Models.Blog
 {
@@ -10,6 +11,11 @@ namespace MotoPasja.Models.Blog
     {
         public float AverageRating { get; set; }
         public int NumberOfRatings { get; set; }
+        public byte[] Miniature { get; set; }
+        [NotMapped]
+        public string Author { get; set; }
+        [NotMapped]
+        public string AuthorAvatar { get; set; }
         public List<PostModel> Posts { get; set; }
         public List<BlogImage> Images { get; set; }
         public List<RatingBlogModel> Ratings {get; set;}

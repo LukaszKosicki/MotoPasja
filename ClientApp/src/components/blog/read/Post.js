@@ -1,59 +1,38 @@
 ﻿import React from 'react';
 import Lightbox from 'react-lightbox-component';
 import "react-lightbox-component/build/css/index.css";
-import RegistrationCRUD from '../../common/information/RegistrationCRUD';
 import $ from 'jquery';
 import BlogModel from '../create/BlogModel';
 import { connect } from 'react-redux';
-//import getPosts from '../../../store/actions/post';
-//import GetPostsFromServer from '../../../js/Post';
+import { Button } from "reactstrap";
+import PostInformation from "./PostInformation";
+import { setPosts, getPostsFromServer } from "../../../store/actions/post";
+import { setEditingDate } from "../../../store/actions/blog";
 
 class Post extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            images: [],
             edit: false
         };
-     //   this.getPosts = GetPostsFromServer.bind(this);
     }
-
-    static getDerivedStateFromProps(props, state) {
-        const imgs = [];
-        for (var i = 0; i < props.images.length; i++) {
-            var sr = props.images[i].fileName;
-            imgs.push({ src: sr });
-        }
-        return {
-            images: imgs
-        };
-    }
-    /*
-    componentDidMount() {
-        const imgs = [];
-        for (var i = 0; i < this.props.images.length; i++) {
-            var sr = this.props.images[i].fileName;
-            imgs.push({ src: sr });
-        }
-        this.setState({
-            images: imgs
-        });
-    }
-    */
+    
     deletePost = () => {
-        $.ajax({
-            url: "post/deletePost/?postId=" + this.props.id,
-            method: 'delete',
-            success: (result) => {
-                this.props.post.posts.forEach((item, index, arr) => {
-                    if (item.id == this.props.id) {
-                        arr.splice(index, 1);
-                  //      this.props.getPosts(arr);
-                        console.log(this.props);
-                    }
-                });
-            }
-        });
+        fetch("post/deletePost/?postId=" + this.props.id, {
+            method: "delete"
+        })
+            .then(resp => resp.json())
+            .then(resp => {
+                if (resp) {
+                    this.props.post.posts.forEach((item, index, arr) => {
+                        if (item.id == this.props.id) {
+                            arr.splice(index, 1);
+                            this.props.setPosts(arr);
+                           
+                        }
+                    });
+                }
+            })
     }
 
     updatePost = (title, contents) => {
@@ -65,21 +44,23 @@ class Post extends React.Component {
                 blogModelId: this.props.blogModelId
             };
 
-            $.ajax({
-                url: "post/updatePost",
-                type: "patch",
-                contentType: "application/json",
-                dataType: "json",
-                data: JSON.stringify(post),
-                success: (data) => {
-                    if (data === true) {
-                    //    this.getPosts();
+            fetch("post/updatePost", {
+                method: "patch",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(post)
+            })
+                .then(resp => resp.json())
+                .then(resp => {
+                    if (resp.success) {
+                        this.props.getPosts(this.props.blogModelId);
+                        this.props.setEditingDate(resp.editingDate);
                         this.setState({
                             edit: false
                         });
                     }
-                }
-            });
+                })
         } else {
             this.setState({
                 edit: false
@@ -96,6 +77,9 @@ class Post extends React.Component {
     render() {
         var contentsDiv = {
             textAlign: 'left'
+        };
+        var editBtnDivStyles = {
+            textAlign: "right"
         };
         if (this.state.edit) {
             return (
@@ -117,21 +101,24 @@ class Post extends React.Component {
         } else {
             return (
                 <div>
+                    {
+                        this.props.user.user.userName === this.props.author &&
+                        <div style={editBtnDivStyles}>
+                            <Button type="button" color="link" onClick={this.deletePost}>Usuń</Button>
+                            <Button type="button" color="link" onClick={this.edit}>Edytuj</Button>
+                        </div>
+                    }
                     <div>
-                        <RegistrationCRUD informations={[
-                            "Autor: " + this.props.author,
-                            "Data dodania: " + this.props.dateOfAddition,
-                            "Ostatnia aktywność: " + this.props.editingDate]}
-                            delete={this.deletePost}
-                            edit={this.edit}
-                            isAuthor={this.props.isAuthor}
-                        />
                         <h2>{this.props.title}</h2>
                         <div style={contentsDiv}>
                             <p>{this.props.contents}</p>
                         </div>
                     </div>
-                    <Lightbox images={this.state.images} />
+                    <Lightbox images={this.props.images} />
+                    <PostInformation
+                        dateOfAddition={this.props.dateOfAddition}
+                        editingDate={this.props.editingDate}
+                        />
                     <hr />
                 </div>
             );
@@ -144,7 +131,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  //  getPosts: (posts) => dispatch(getPosts(posts))
+    setPosts: posts => dispatch(setPosts(posts)),
+    getPosts: blogId => dispatch(getPostsFromServer(blogId)),
+    setEditingDate: date => dispatch(setEditingDate(date))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Post);

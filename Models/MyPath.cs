@@ -8,10 +8,10 @@ namespace MotoPasja.Models
 {
     public static class MyPath
     {
-        public static string GetPath(string model, string folderName)
+        public static string GetPath(string mainFolder, string model, string folderName)
         {
             return (Path.Combine(
-                    Directory.GetCurrentDirectory(), "clientApp", "build", "images", model, folderName));
+                    Directory.GetCurrentDirectory(), "clientApp", mainFolder, "images", model, folderName));
         }
     }
 }

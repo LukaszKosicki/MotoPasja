@@ -8,9 +8,9 @@ namespace MotoPasja.Models.Blog
 {
     public interface IBlogRepository
     {
-        IQueryable<BlogModel> Blogs { get; }
-        void CreateBlog(BlogModel model, string userName);
-        bool DeleteBlog(int blogId, string userName);
-        bool UpdateBlog(BlogModel model, string userName);
+        IQueryable<BlogModel> Blogs { get; } 
+        Task CreateBlog(BlogModel model, string mainFolder);
+        bool DeleteBlog(int blogId, string authorId);
+        bool UpdateBlog(BlogModel model, string authorId);
     }
 }

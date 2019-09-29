@@ -136,6 +136,8 @@ namespace MotoPasja.Migrations.AppIdentityDb
 
                     b.Property<int>("AccessFailedCount");
 
+                    b.Property<byte[]>("Avatar");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 

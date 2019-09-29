@@ -15,6 +15,7 @@ export default class BlogModel extends Component {
             contents: this.props.content,
             title: this.props.title
         };
+        console.log(this.props);
     }
 
     checkText = (text) => {
@@ -85,13 +86,13 @@ export default class BlogModel extends Component {
             var isImg = false;
             if (this.props.images != undefined) {
                 this.props.images.forEach((item, index, arr) => {
-                    if (item.fileName.indexOf('img' + i) != -1) {
+                    if (item.src.indexOf('img' + i) != -1) {
                         imagesBox.push(<ImageBox
                             key={this.props.modelId + i}
                             id={this.props.modelId + i}
                             fileName={"img" + i}
                             modelId={this.props.modelId}
-                            path={item.fileName}
+                            path={item.src}
                             getBlog={this.props.getBlog}
                             model={this.props.model}
                         />);
@@ -110,7 +111,7 @@ export default class BlogModel extends Component {
                 />);
             }
         }
-
+  
         return (
             <div>
                 <Form style={formStyles}>

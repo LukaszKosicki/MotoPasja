@@ -1,0 +1,19 @@
+.card :hover {
+  cursor: pointer;
+}
+
+.cardAvatar {
+  max-height: 32px;
+  max-width: 32px;
+}
+
+.cardInformation {
+  display: flex;
+  align-items: center;
+}
+
+.cardInformationText {
+  margin-left: 10px;
+}
+
+/*# sourceMappingURL=Card.css.map */

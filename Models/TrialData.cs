@@ -9,279 +9,95 @@ using MotoPasja.Models.Blog;
 using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using MotoPasja.Models.Identity;
+using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace MotoPasja.Models
 {
     public static class TrialData
     {
-        public static void EnsureBlogsAndPosts(IApplicationBuilder app)
+        public static BlogModel CreateBlog(IConfiguration configuration)
         {
-            ApplicationDbContext context = app.ApplicationServices
-                .GetRequiredService<ApplicationDbContext>();
-            
-            context.Database.Migrate();
-            if(!context.Blogs.Any())
+            return (new BlogModel
             {
-                context.Blogs.AddRange(
-                    new BlogModel
-                    {
-                        Author = "lukaszvip166",
-                        Title = "Motocyklem po Polsce i Europie",
-                        Contents = "Bycie motocyklistą wiąże się z dumnym posiadaniem wypasionych dwóch kółek, uciechą z jazdy oraz podrywaniem dziewczyn (lub chłopaków). Jednak oprócz tego pojawia się wiele, nieuświadomionych na początku, kwestii. Począwszy od tego, że po uciułaniu na wymarzoną maszynę masz o wiele chudszy portfel, kończąc na tym, że całkowicie zmienia się twój język i zaczynasz posługiwać się motocyklowym slangiem. Poznaj 10 smaczków z życia “prawdziwego” motocyklisty.",
-                        DateOfAddition = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                        EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                        Images = new List<BlogImage>
+                AuthorId = "28a6b1e7-fe14-4f61-b54c-31cc352b6501",
+                Title = "Motocyklem po Polsce i Europie",
+                Contents = "Bycie motocyklistą wiąże się z dumnym posiadaniem wypasionych dwóch kółek, uciechą z jazdy oraz podrywaniem dziewczyn (lub chłopaków). Jednak oprócz tego pojawia się wiele, nieuświadomionych na początku, kwestii. Począwszy od tego, że po uciułaniu na wymarzoną maszynę masz o wiele chudszy portfel, kończąc na tym, że całkowicie zmienia się twój język i zaczynasz posługiwać się motocyklowym slangiem. Poznaj 10 smaczków z życia “prawdziwego” motocyklisty.",
+                DateOfAddition = DateTime.Now,
+                EditingDate = DateTime.Now,
+                Miniature = File.ReadAllBytes(Path.Combine(
+                            Directory.GetCurrentDirectory(), "clientApp", configuration["RootFolder"], "images", "a.jpg")),
+                Images = new List<BlogImage>
                         {
-                             new BlogImage
-                             {
-                                 FileName = "images/aaa.jpg"
-                             }
+                            new BlogImage
+                            {
+                                Src = "images/aaa.jpg"
+                            }
                         },
-                        Posts = new List<PostModel>
+                Posts = new List<PostModel>
                         {
                             new PostModel
                             {
-                                Author = "lukaszvip166",
+                                AuthorId = "28a6b1e7-fe14-4f61-b54c-31cc352b6501",
                                 Title = "Przyjaciele i obcy",
                                 Contents = "Kiedy już stałeś się dumnym właścicielem dwóch kółek, nagle okazuje się, że masz bardzo wielu przyjaciół, którzy też palą się do jazdy… najchętniej twoją maszyną. Większość  z nich w ostateczności zadowoli się selfie na tle twojego motocykla, ale kilku będzie się zarzekało, że posiada wybitne umiejętności profesjonalnego motocyklisty, żeby przekonać cię do rundki po osiedlu. Nie pozwól na to! Na 100% wrócą z plastikami w ręku, przysięgając, że to nie była ich wina.",
-                                DateOfAddition = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                                EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
+                                DateOfAddition = DateTime.Now,
+                                EditingDate = DateTime.Now,
                                 Images = new List<PostImage>
                                 {
                                     new PostImage
                                     {
-                                        FileName = "images/aaa.jpg"
+                                        Src = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "images/aaa.jpg"
+                                        Src = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "images/aaa.jpg"
+                                        Src = "images/aaa.jpg"
                                     }
                                 }
                             },
                             new PostModel
                             {
-                                Author = "lukaszvip166",
+                                AuthorId = "28a6b1e7-fe14-4f61-b54c-31cc352b6501",
                                 Title = "Przyjaciele i obcy",
                                 Contents = "Kiedy już stałeś się dumnym właścicielem dwóch kółek, nagle okazuje się, że masz bardzo wielu przyjaciół, którzy też palą się do jazdy… najchętniej twoją maszyną. Większość  z nich w ostateczności zadowoli się selfie na tle twojego motocykla, ale kilku będzie się zarzekało, że posiada wybitne umiejętności profesjonalnego motocyklisty, żeby przekonać cię do rundki po osiedlu. Nie pozwól na to! Na 100% wrócą z plastikami w ręku, przysięgając, że to nie była ich wina.",
-                                DateOfAddition = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                                EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                                 Images = new List<PostImage>
+                                DateOfAddition = DateTime.Now,
+                                EditingDate = DateTime.Now,
+                                Images = new List<PostImage>
                                 {
                                     new PostImage
                                     {
-                                        FileName = "images/aaa.jpg"
+                                        Src = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "images/aaa.jpg"
+                                        Src = "images/aaa.jpg"
                                     },
                                     new PostImage
                                     {
-                                        FileName = "images/aaa.jpg"
+                                        Src = "images/aaa.jpg"
                                     }
                                 }
                             }
 
                         }
-                    },
-                    new BlogModel
-                    {
-                        Author = "lukaszvip166",
-                        Title = "Motocyklem po Polsce i Europie",
-                        Contents = "Bycie motocyklistą wiąże się z dumnym posiadaniem wypasionych dwóch kółek, uciechą z jazdy oraz podrywaniem dziewczyn (lub chłopaków). Jednak oprócz tego pojawia się wiele, nieuświadomionych na początku, kwestii. Począwszy od tego, że po uciułaniu na wymarzoną maszynę masz o wiele chudszy portfel, kończąc na tym, że całkowicie zmienia się twój język i zaczynasz posługiwać się motocyklowym slangiem. Poznaj 10 smaczków z życia “prawdziwego” motocyklisty.",
-                        DateOfAddition = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                        EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                        Images = new List<BlogImage>
-                        {
-                             new BlogImage
-                             {
-                                 FileName = "images/aaa.jpg"
-                             }
-                        },
-                        Posts = new List<PostModel>
-                        {
-                            new PostModel
-                            {
-                                Author = "lukaszvip166",
-                                Title = "Przyjaciele i obcy",
-                                Contents = "Kiedy już stałeś się dumnym właścicielem dwóch kółek, nagle okazuje się, że masz bardzo wielu przyjaciół, którzy też palą się do jazdy… najchętniej twoją maszyną. Większość  z nich w ostateczności zadowoli się selfie na tle twojego motocykla, ale kilku będzie się zarzekało, że posiada wybitne umiejętności profesjonalnego motocyklisty, żeby przekonać cię do rundki po osiedlu. Nie pozwól na to! Na 100% wrócą z plastikami w ręku, przysięgając, że to nie była ich wina.",
-                                DateOfAddition = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                                EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                                 Images = new List<PostImage>
-                                {
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    },
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    },
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    }
-                                }
-                            },
-                            new PostModel
-                            {
-                                Author = "lukaszvip166",
-                                Title = "Przyjaciele i obcy",
-                                Contents = "Kiedy już stałeś się dumnym właścicielem dwóch kółek, nagle okazuje się, że masz bardzo wielu przyjaciół, którzy też palą się do jazdy… najchętniej twoją maszyną. Większość  z nich w ostateczności zadowoli się selfie na tle twojego motocykla, ale kilku będzie się zarzekało, że posiada wybitne umiejętności profesjonalnego motocyklisty, żeby przekonać cię do rundki po osiedlu. Nie pozwól na to! Na 100% wrócą z plastikami w ręku, przysięgając, że to nie była ich wina.",
-                                DateOfAddition = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                                EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                                 Images = new List<PostImage>
-                                {
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    },
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    },
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    }
-                                }
-                            }
+            });
+        }
+        public static void EnsureBlogsAndPosts(IApplicationBuilder app, IConfiguration configuration)
+        {
+            ApplicationDbContext context = app.ApplicationServices
+                .GetRequiredService<ApplicationDbContext>();
 
-                        }
-                    },
-                    new BlogModel
-                    {
-                        Author = "lukaszvip1991",
-                        Title = "Motocyklem po Polsce i Europie",
-                        Contents = "Bycie motocyklistą wiąże się z dumnym posiadaniem wypasionych dwóch kółek, uciechą z jazdy oraz podrywaniem dziewczyn (lub chłopaków). Jednak oprócz tego pojawia się wiele, nieuświadomionych na początku, kwestii. Począwszy od tego, że po uciułaniu na wymarzoną maszynę masz o wiele chudszy portfel, kończąc na tym, że całkowicie zmienia się twój język i zaczynasz posługiwać się motocyklowym slangiem. Poznaj 10 smaczków z życia “prawdziwego” motocyklisty.",
-                        DateOfAddition = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                        EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                        Images = new List<BlogImage>
-                        {
-                             new BlogImage
-                             {
-                                 FileName = "images/aaa.jpg"
-                             }
-                        },
-                        Posts = new List<PostModel>
-                        {
-                            new PostModel
-                            {
-                                Author = "lukaszvip1991",
-                                Title = "Przyjaciele i obcy",
-                                Contents = "Kiedy już stałeś się dumnym właścicielem dwóch kółek, nagle okazuje się, że masz bardzo wielu przyjaciół, którzy też palą się do jazdy… najchętniej twoją maszyną. Większość  z nich w ostateczności zadowoli się selfie na tle twojego motocykla, ale kilku będzie się zarzekało, że posiada wybitne umiejętności profesjonalnego motocyklisty, żeby przekonać cię do rundki po osiedlu. Nie pozwól na to! Na 100% wrócą z plastikami w ręku, przysięgając, że to nie była ich wina.",
-                                DateOfAddition = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                                EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                                 Images = new List<PostImage>
-                                {
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    },
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    },
-                                    new PostImage
-                                    {
-                                        FileName ="images/aaa.jpg"
-                                    }
-                                }
-                            },
-                            new PostModel
-                            {
-                                Author = "lukaszvip1991",
-                                Title = "Przyjaciele i obcy",
-                                Contents = "Kiedy już stałeś się dumnym właścicielem dwóch kółek, nagle okazuje się, że masz bardzo wielu przyjaciół, którzy też palą się do jazdy… najchętniej twoją maszyną. Większość  z nich w ostateczności zadowoli się selfie na tle twojego motocykla, ale kilku będzie się zarzekało, że posiada wybitne umiejętności profesjonalnego motocyklisty, żeby przekonać cię do rundki po osiedlu. Nie pozwól na to! Na 100% wrócą z plastikami w ręku, przysięgając, że to nie była ich wina.",
-                                DateOfAddition = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                                EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                                 Images = new List<PostImage>
-                                {
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    },
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    },
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    }
-                                }
-                            }
-
-                        }
-                    },
-                    new BlogModel
-                    {
-                        Author = "lukaszvip1991",
-                        Title = "Motocyklem po Polsce i Europie",
-                        Contents = "Bycie motocyklistą wiąże się z dumnym posiadaniem wypasionych dwóch kółek, uciechą z jazdy oraz podrywaniem dziewczyn (lub chłopaków). Jednak oprócz tego pojawia się wiele, nieuświadomionych na początku, kwestii. Począwszy od tego, że po uciułaniu na wymarzoną maszynę masz o wiele chudszy portfel, kończąc na tym, że całkowicie zmienia się twój język i zaczynasz posługiwać się motocyklowym slangiem. Poznaj 10 smaczków z życia “prawdziwego” motocyklisty.",
-                        DateOfAddition = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                        EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                        Images = new List<BlogImage>
-                        {
-                             new BlogImage
-                             {
-                                 FileName = "images/aaa.jpg"
-                             }
-                        },
-                        Posts = new List<PostModel>
-                        {
-                            new PostModel
-                            {
-                                Author = "lukaszvip1991",
-                                Title = "Przyjaciele i obcy",
-                                Contents = "Kiedy już stałeś się dumnym właścicielem dwóch kółek, nagle okazuje się, że masz bardzo wielu przyjaciół, którzy też palą się do jazdy… najchętniej twoją maszyną. Większość  z nich w ostateczności zadowoli się selfie na tle twojego motocykla, ale kilku będzie się zarzekało, że posiada wybitne umiejętności profesjonalnego motocyklisty, żeby przekonać cię do rundki po osiedlu. Nie pozwól na to! Na 100% wrócą z plastikami w ręku, przysięgając, że to nie była ich wina.",
-                                DateOfAddition = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                                EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                                 Images = new List<PostImage>
-                                {
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    },
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    },
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    }
-                                }
-                            },
-                            new PostModel
-                            {
-                                Author = "lukaszvip1991",
-                                Title = "Przyjaciele i obcy",
-                                Contents = "Kiedy już stałeś się dumnym właścicielem dwóch kółek, nagle okazuje się, że masz bardzo wielu przyjaciół, którzy też palą się do jazdy… najchętniej twoją maszyną. Większość  z nich w ostateczności zadowoli się selfie na tle twojego motocykla, ale kilku będzie się zarzekało, że posiada wybitne umiejętności profesjonalnego motocyklisty, żeby przekonać cię do rundki po osiedlu. Nie pozwól na to! Na 100% wrócą z plastikami w ręku, przysięgając, że to nie była ich wina.",
-                                DateOfAddition = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                                EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE")),
-                                 Images = new List<PostImage>
-                                {
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    },
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    },
-                                    new PostImage
-                                    {
-                                        FileName = "images/aaa.jpg"
-                                    }
-                                }
-                            }
-                        }
-                    });
+            context.Database.Migrate();
+            if (!context.Blogs.Any())
+            {
+                context.Add(CreateBlog(configuration));
+                context.Add(CreateBlog(configuration));
+                context.Add(CreateBlog(configuration));
+                context.Add(CreateBlog(configuration));
             }
             context.SaveChanges();
         }
@@ -299,6 +115,7 @@ namespace MotoPasja.Models
             {
                 admin = new AppUser
                 {
+                    Avatar =  File.ReadAllBytes($@"C:\Users\lukas\Pulpit\team.png"),
                     UserName = adminName
                 };
                 await userManager.CreateAsync(admin, adminPassword);
@@ -312,6 +129,7 @@ namespace MotoPasja.Models
             {
                 user = new AppUser
                 {
+                    Avatar = File.ReadAllBytes($@"C:\Users\lukas\Pulpit\team.png"),
                     UserName = userName
                 };
                 await userManager.CreateAsync(user, userPassword);

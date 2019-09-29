@@ -111,16 +111,27 @@ export default class Register extends React.Component {
 
         if (this.state.nick["valid"] && this.state.email["valid"] && this.state.password["valid"] &&
             this.state.passwordRepeated["valid"]) {
-            $.ajax({
-                url: "account/register",
-                type: "post",
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                data: JSON.stringify(registerModel),
-                success: (data) => {
-                    console.log(data);
-                }
-            });
+            fetch("account/register", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(registerModel)
+            })
+                .then(resp => resp.json())
+                .then(resp => {
+                    if (resp.success) {
+                        this.props.history.push({
+                            pathname: "/success",
+                            state: { statement: resp.message }
+                        })
+                    } else {
+                        this.props.history.push({
+                            pathname: "/error",
+                            state: { statement: resp.message }
+                        })
+                    }
+                })
         } else {
             alert("Żeby się zarejestrować popraw błędy w formularzu!");
         }

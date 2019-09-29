@@ -1,0 +1,25 @@
+@media (min-width: 1200px) {
+  .blogInformation {
+    display: flex;
+    margin-bottom: 25px;
+    position: relative;
+  }
+
+  .blogInformation > img {
+    max-height: 64px;
+    max-width: 64px;
+  }
+
+  .blogInformation > button {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+  }
+
+  .informations {
+    text-align: left;
+    margin-left: 30px;
+  }
+}
+
+/*# sourceMappingURL=BlogInformation.css.map */

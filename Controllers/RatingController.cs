@@ -26,7 +26,11 @@ namespace MotoPasja.Controllers
         [AllowAnonymous]
         public JsonResult GetAverageRating(int blogId)
         {
-            return Json(repository.GetAverageRating(blogId));
+            return Json(new
+            {
+                AverageRating = repository.GetAverageRating(blogId),
+                NumberOfRatings = repository.GetNumberOfRatings(blogId)
+            });
         }
     }
 }

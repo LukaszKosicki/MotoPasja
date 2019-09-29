@@ -10,14 +10,11 @@ namespace MotoPasja.Models
     public class Image
     {
         public int Id { get; set; }
-        public string FileName { get; set; }
+        public string Src { get; set; }
         public string Alt { get; set; }
 
-        public static async Task UploadImage(IFormFile file, string fileName, string folderName, string modelName)
+        public static async Task UploadImage(IFormFile file, string pathToFolder, string fileName)
         {
-            var pathToFolder = Path.Combine(Directory.GetCurrentDirectory(),
-                "clientapp/build/images", modelName, folderName);
-
             MyFolder myFolder = new MyFolder(pathToFolder);
             myFolder.IfItDoesNotExistCreateIt();
 
@@ -32,9 +29,9 @@ namespace MotoPasja.Models
             }
         }
 
-        public static void DeleteImage(string fileName, string modelId, string modelName)
+        public static void DeleteImage(string fileName, string modelId, string modelName, string rootFolder)
         {
-            var pathToFolder = Path.Combine(Directory.GetCurrentDirectory(), "clientApp", "build", "images",
+            var pathToFolder = Path.Combine(Directory.GetCurrentDirectory(), "clientApp", rootFolder, "images",
                 modelName, modelId);
 
             MyFile myFile = new MyFile(pathToFolder, fileName);

@@ -15,7 +15,11 @@ class CreateBlog extends React.Component {
 
     componentDidMount() {
         var time = new Date();
-        var fullTime = time.getHours() + ';' + time.getMinutes() + ';' + time.getSeconds();
+        var fullTime = time.getFullYear() + '-' + (time.getMonth() < 10 ? '0' : '') + time.getMonth()
+            + '-' + (time.getDay() < 10 ? '0' : '') + time.getDay() + ' '
+            + (time.getHours() < 10 ? '0' : '') + time.getHours() + ':' + (time.getMinutes() < 10 ? '0' : '')
+            + time.getMinutes() + ':' + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds();
+        console.log(fullTime);
         this.setState({
             createTime: fullTime
         });
@@ -36,20 +40,16 @@ class CreateBlog extends React.Component {
             dateOfAddition: this.state.createTime
         };
 
-        $.ajax({
-            url: "blog/createBlog",
-            type: "post",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            headers: { "Authorization": "Bearer " + localStorage.getItem("motoPasjaToken") },
-            data: JSON.stringify(blog),
-            success: (data) => {
-                this.redirectToBlog(data);
+        fetch("blog/createBlog", {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json"
             },
-            error: function () {
-                alert("błąd połączenia");
-            }
-        });
+            body: JSON.stringify(blog)
+        })
+            .then(resp => resp.json())
+            .then(blog => this.redirectToBlog(blog))
+            .catch(function () { alert("błąd połączenia") });
     }
 
     render() {

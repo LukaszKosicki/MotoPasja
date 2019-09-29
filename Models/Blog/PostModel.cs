@@ -9,7 +9,7 @@ namespace MotoPasja.Models.Blog
 {
     public class PostModel : RegistrationModel
     {
-        [ForeignKey("BlogModelForeignKey")]
+     //   [ForeignKey("BlogModelForeignKey")]
         public int BlogModelId { get; set; }
         public List<PostImage> Images { get; set; }
     }

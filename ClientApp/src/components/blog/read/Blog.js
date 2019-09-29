@@ -1,70 +1,32 @@
 ﻿import React from 'react';
 import Lightbox from 'react-lightbox-component';
 import "react-lightbox-component/build/css/index.css";
-import RegistrationCRUD from '../../common/information/RegistrationCRUD';
 import BlogModel from '../create/BlogModel';
 import $ from 'jquery';
 import RatingStars from '../../common/RatingStars';
+import BlogInformation from "./BlogInformation";
+import { connect } from "react-redux";
 
-export default class Blog extends React.Component {
+class Blog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            images: [],
-            title: "",
-            content: "",
-            edit: false,
-            rating: 0
+            edit: false
         };
     }
 
-    static getDerivedStateFromProps(props, state) {
-        const imgs = [];
-        for (var i = 0; i < props.images.length; i++) {
-            var sr = props.images[i].fileName;
-            imgs.push({ src: sr });
-        }
-        return {
-            images: imgs
-        };
-    }
-
-    componentDidMount() {
-        this.setState({
-            title: this.props.title,
-            content: this.props.contents
-        });
-        console.log(this.props);
-    }
- 
     edit = () => {
         this.setState({
             edit: true
         });
     }
-
-    getTitle = (text) => {
-        this.setState({
-            title: text
-        });
-    }
-
-    getContent = (text) => {
-        this.setState({
-            content: text
-        });
-    }
-
+   
     cancelEdit = () => {
         this.setState({
             edit: false,
             title: this.props.title,
             content: this.props.contents
         });
-    }
-
-    onStarClick = (nextValue, prevValue, name) => {
-        this.setState({ rating: nextValue });
     }
 
     updateBlog = (title, contents) => {
@@ -75,21 +37,22 @@ export default class Blog extends React.Component {
                 contents: contents
             };
 
-            $.ajax({
-                url: "blog/updateBlog",
-                type: "patch",
-                contentType: "application/json",
-                dataType: "json",
-                data: JSON.stringify(blog),
-                success: (data) => {
-                    if (data === true) {
+            fetch("blog/updateBlog", {
+                method: "patch",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(blog)
+            })
+                .then(resp => resp.json())
+                .then(resp => {
+                    if (resp) {
                         this.props.getBlog();
                         this.setState({
                             edit: false
                         });
                     }
-                }
-            });
+                })
         } else {
             this.setState({
                 edit: false
@@ -104,7 +67,7 @@ export default class Blog extends React.Component {
         var lightboxDiv = {
             textAlign: 'center'
         };
-    
+        
         if (this.state.edit) {
             return (
                 <div>
@@ -126,26 +89,26 @@ export default class Blog extends React.Component {
         } else {
             return (
                 <div>
-                    <RegistrationCRUD informations={[
-                        "Autor: " + this.props.author,
-                        "Data dodania: " + this.props.dateOfAddition,
-                        "Ostatnia aktywność: " + this.props.editingDate]}
+                    <BlogInformation   
+                        authorAvatar={this.props.authorAvatar}
+                        author={this.props.author}
+                        dateOfAddition={this.props.dateOfAddition}
+                        dateOfLastEdition={this.props.blog.editingDate}
                         edit={this.edit}
-                        isAuthor={this.props.isAuthor}
                     />
                     <h1>{this.props.title}</h1>
                     <p>{this.props.contents}</p>
                     <div style={containerDiv}>
                         <div style={lightboxDiv}>
                             <Lightbox
-                                images={this.state.images} />
+                                images={this.props.images} />
                         </div>
                         <RatingStars 
                             count={5}
                             size={30}
                             color2={'#ffd700'}
-                            averageRating={this.props.averageRating}
-                            numberOfRatings={this.props.numberOfRatings}
+                            averageRating={this.props.blog.averageRating}
+                            numberOfRatings={this.props.blog.numberOfRatings}
                             />
                     </div>
                     <hr />
@@ -154,3 +117,9 @@ export default class Blog extends React.Component {
         }
     }
 }
+
+const mapStateToProps = state => ({
+    ...state
+});
+
+export default connect(mapStateToProps)(Blog);

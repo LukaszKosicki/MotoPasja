@@ -11,6 +11,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.IO;
 
 namespace MotoPasja.Controllers
 {
@@ -29,8 +30,6 @@ namespace MotoPasja.Controllers
         [HttpPost]
         public async Task<JsonResult> Register([FromBody] CreateModel model)
         {
-            Dictionary<string, string> answer = new Dictionary<string, string>();
-
             if (ModelState.IsValid && model.Password == model.PasswordRepeated)
             {
                 AppUser newUser = new AppUser
@@ -43,24 +42,27 @@ namespace MotoPasja.Controllers
 
                 if (result.Succeeded)
                 {
-                    answer.Add("success", "true");
-                    return Json(answer);
+                    return Json(new
+                    {
+                        Success = true,
+                        Message = "Grtulacje!"
+                    }); 
                 }
                 else
                 {
-                    answer.Add("success", "false");
-                    foreach (var error in result.Errors)
+                    return Json(new
                     {
-                        answer.Add(error.Code, error.Description);
-                    }
-                    return Json(answer);
+                        Success = false,
+                        Message = "Coś Poszło nie tak. Spróbuj jeszcze raz!"
+                    });
                 }
             }
             else
             {
-                answer.Add("success", "false");
-                answer.Add("error", "Wprowadzone dane są nieprawidłowe. Popraw dane i spróbuj jeszcze raz.");
-                return Json(answer);
+                return Json(new {
+                    Success = false,
+                    Message = "Wprowadzone dane są nieprawidłowe. Popraw je i spróbuj jeszcze raz!"
+                });
             }
         }
 
@@ -68,7 +70,6 @@ namespace MotoPasja.Controllers
       //  [ValidateAntiForgeryToken]
         public async Task<JsonResult> Login([FromBody] LoginModel model)
         {
-            Dictionary<string, string> answer = new Dictionary<string, string>();
             if (ModelState.IsValid)
             {
                 AppUser user =
@@ -76,49 +77,44 @@ namespace MotoPasja.Controllers
 
                 if(user != null)
                 {
-                    /*
-                    var tokenHandler = new JwtSecurityTokenHandler();
-                    var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-                    var tokenDescriptor = new SecurityTokenDescriptor
-                    {
-                        Subject = new ClaimsIdentity(new Claim[]
-                        {
-                            new Claim(ClaimTypes.Name, user.Id)
-                        }),
-                        Expires = DateTime.UtcNow.AddDays(7),
-                        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                    };
-
-                    var token = tokenHandler.CreateToken(tokenDescriptor);
-                   */
-
                     await signInManager.SignOutAsync();
              
                     if ((await signInManager.PasswordSignInAsync(user,
                         model.Password, false, false)).Succeeded)
                     {
-                        Dictionary<string, string> userData = new Dictionary<string, string>();
-                        userData.Add(nameof(user.UserName), user.UserName);
-                        userData.Add(nameof(user.Email), user.Email);
-
-                        return Json(userData);
+                        return Json(new {
+                            Success = true,
+                            Avatar = user.Avatar != null ? 
+                            "data:image/png;base64, " + Convert.ToBase64String(user.Avatar) :
+                            "images/avatar.png",
+                            user.UserName,
+                            user.Email
+                        });
                     }
                     else
                     {
-                        answer.Add("error", "Nieprawidłowa nazwa użytkownika lub hasło!");
-                        return Json(answer);
+                        return Json(new {
+                            Success = false,
+                            Message = "Nieprawidłowe hasło lub e-mail"
+                        });
                     }
                 }
                 else
                 {
-                    answer.Add("error", $"Użytkownik {model.Email} nie istnieje!");
-                    return Json(false);
+                    return Json(new
+                    {
+                        Success = false,
+                        Message = $"Użytkownik o adresie e=mail: {model.Email} nie istnieje."
+                    });
                 }
             }
             else 
             {
-                answer.Add("error", "Wprowadzone dane są nieprawidłowe. Proszę Cię nie włamuj się!");
-                return Json(answer);
+                return Json(new
+                {
+                    Success = false,
+                    Message = $"Wprowadzone dane są nieprawidłowe."
+                });
             } 
         }
 

@@ -16,18 +16,18 @@ namespace MotoPasja.Models.Blog
 
         public IQueryable<PostModel> Posts => context.Posts;
 
-        public bool CreatePost(RegistrationModel model, int blogId)
+        public bool CreatePost(PostModel model, string mainFolder)
         {
-            var blog = context.Blogs.Include(b => b.Posts).FirstOrDefault(b => b.Id == blogId);
+            var blog = context.Blogs.Include(b => b.Posts).FirstOrDefault(b => b.Id == model.BlogModelId);
             if (blog.Posts == null) blog.Posts = new List<PostModel>();
 
             blog.Posts.Add((PostModel)model);
             context.Blogs.Update(blog);
             context.SaveChanges();
 
-            PathCRUD.AddImageToNewRegistration(model, "post");
+            PathCRUD.AddImageToNewRegistration(model, "post", mainFolder);
 
-            model.DateOfAddition = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE"));
+            model.DateOfAddition = DateTime.Now;
             model.EditingDate = model.DateOfAddition;       
 
             blog.EditingDate = model.DateOfAddition;
@@ -38,10 +38,10 @@ namespace MotoPasja.Models.Blog
             return true;
         }
 
-        public bool DeletePost(int postId, string userName)
+        public bool DeletePost(int postId, string userId)
         {
             PostModel post = context.Posts.FirstOrDefault(p => p.Id == postId);
-            if (post != null && post.Author == userName)
+            if (post != null && post.AuthorId == userId)
             {
                 context.Posts.Remove(post);
                 context.SaveChanges();
@@ -50,10 +50,10 @@ namespace MotoPasja.Models.Blog
             return false;
         }
 
-        public bool UpdatePost(PostModel model, string userName)
+        public object UpdatePost(PostModel model, string userId)
         {
             BlogModel blog = context.Blogs.Include(b => b.Posts).FirstOrDefault(b => b.Id == model.BlogModelId);
-            if (blog != null && blog.Author == userName)
+            if (blog != null && blog.AuthorId == userId)
             {
                 PostModel post = blog.Posts.FirstOrDefault(p => p.Id == model.Id);
 
@@ -62,15 +62,22 @@ namespace MotoPasja.Models.Blog
                 post.Contents = model.Contents;
                 post.Title = model.Title;
 
-                blog.EditingDate = DateTime.Now.ToString("g", CultureInfo.CreateSpecificCulture("de-DE"));
+                blog.EditingDate = DateTime.Now;
                 post.EditingDate = blog.EditingDate;
 
                 context.Blogs.Update(blog);
                 context.SaveChanges();
 
-                return true;
+                return new
+                {
+                    Success = true,
+                    EditingDate = blog.EditingDate.ToString("yyyy-MM-dd hh:mm")
+                };
             }
-            return false;
+            return new
+            {
+                Success = false
+            };
         }
     }
 }

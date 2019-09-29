@@ -25,7 +25,7 @@ function configureStore() {
 var store = configureStore();
 
 store.dispatch(getUser());
-console.log(store.getState());
+
 ReactDOM.render(
     <Provider store={store}>
         <App/>

@@ -9,14 +9,13 @@ import NoData from "../../common/NoData";
 class GetPosts extends React.Component {
     constructor(props) {
         super(props);
-    }
-   
-    componentDidMount() {
+
         this.props.getPosts(this.props.blog.blogId);
     }
-
+   
     render() {
         if (this.props.post.posts != null) {
+            console.log(this.props.post.posts);
             var i = 1;
             return (
                 Object.keys(this.props.post.posts).map((type) => {
@@ -24,7 +23,6 @@ class GetPosts extends React.Component {
                         <Post key={'post' + (i++)}
                             {...this.props.post.posts[type]}
                             delete={this.deletePost}
-                            isAuthor={this.props.isAuthor}
                         />
                     );
                 })

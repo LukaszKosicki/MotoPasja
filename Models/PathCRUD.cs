@@ -10,7 +10,7 @@ namespace MotoPasja.Models
 {
     public class PathCRUD
     {
-        public static void AddImageToNewRegistration(RegistrationModel model, string registrationName)
+        public static void AddImageToNewRegistration(RegistrationModel model, string registrationName, string mainFolder)
         {
             BlogModel blog = model as BlogModel;
             PostModel post = model as PostModel;
@@ -22,8 +22,8 @@ namespace MotoPasja.Models
             else modelName = "error";
 
             //pozyskanie ścieżki do folderu, w którym znajdują się tymczasowo zdjęcia, oraz ścieżki docelowej
-            var pathToImages = MyPath.GetPath(modelName, model.DateOfAddition);
-            var newPathToImages = MyPath.GetPath(modelName, model.Id.ToString());
+            var pathToImages = MyPath.GetPath(mainFolder, modelName, model.DateOfAddition.ToString().Replace(':', ';'));
+            var newPathToImages = MyPath.GetPath(mainFolder, modelName, model.Id.ToString());
           
             //sprawdzanie czy zdjęcia zostały dodane
             DirectoryInfo di = new DirectoryInfo(pathToImages);
@@ -42,7 +42,7 @@ namespace MotoPasja.Models
                         blog.Images.Add(new BlogImage
                         {
                             Alt = "a",
-                            FileName = $@"images/{registrationName}/{model.Id.ToString()}/{Path.GetFileName(file)}"
+                            Src = $@"images/{registrationName}/{model.Id.ToString()}/{Path.GetFileName(file)}"
                         });
                     }
                 } 
@@ -56,7 +56,7 @@ namespace MotoPasja.Models
                         post.Images.Add(new PostImage
                         {
                             Alt = "a",
-                            FileName = $@"images/post/{model.Id.ToString()}/{Path.GetFileName(file)}"
+                            Src = $@"images/post/{model.Id.ToString()}/{Path.GetFileName(file)}"
                         });
                     }
                 }

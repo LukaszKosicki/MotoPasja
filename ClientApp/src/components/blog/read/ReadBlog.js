@@ -5,8 +5,7 @@ import { Button } from 'reactstrap';
 import $ from 'jquery';
 import BlogModel from '../create/BlogModel';
 import { connect } from 'react-redux';
-//import getPosts from '../../../store/actions/post';
-import setBlogId from '../../../store/actions/blog';
+import { setBlogId } from '../../../store/actions/blog';
 
 class ReadBlog extends React.Component {
     constructor(props) {
@@ -14,41 +13,31 @@ class ReadBlog extends React.Component {
         this.state = {
             createTimePost: null,
             displayAddPostForm: 'none',
-            isAuthor: false
         };
     }
 
     componentDidMount() {
         this.props.setBlogId(this.props.match.params.id);
         var time = new Date();
-        var fullTime = time.getHours() + ';' + time.getMinutes() + ';' + time.getSeconds();
+        var fullTime = time.getFullYear() + '-' + (time.getMonth() < 10 ? '0' : '') + time.getMonth()
+            + '-' + (time.getDay() < 10 ? '0' : '') + time.getDay() + ' '
+            + (time.getHours() < 10 ? '0' : '') + time.getHours() + ':' + (time.getMinutes() < 10 ? '0' : '')
+            + time.getMinutes() + ':' + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds();
         this.setState({
             createTimePost: fullTime,
         });
     }
 
-    checkAuthor = (author) => {
-        if (this.props.user.isOnline && author == this.props.user.user.UserName) {
-            this.setState({
-                isAuthor: true
-            });
-        } else {
-            this.setState({
-                isAuthor: false
-            });
-        }
-    }
-
     deleteBlog = () => {
-        $.ajax({
-            url: "blog/delete/?blogId=" + this.props.blog.blogId,
-            method: 'delete',
-            success: (result) => {
-                if (result === true) {
-                    this.props.history.push('/blogs');
+        fetch("blog/delete/?blogId=" + this.props.blog.blogId, {
+            method: "delete"
+        })
+            .then(resp => resp.json())
+            .then(resp => {
+                if (resp === true) {
+                    this.props.history.push("/blogs");
                 }
-            }
-        });
+            })
     }
 
     showHiddenNewPostForm = () => {
@@ -65,22 +54,21 @@ class ReadBlog extends React.Component {
 
     sendPostToServer = (title, contents) => {
         var post = {
+            blogModelId: this.props.blog.blogId,
             title: title,
             contents: contents,
             dateOfAddition: this.state.createTimePost
         };
 
-        $.ajax({
-            url: "post/createPost/?blogId=" + this.props.blog.blogId,
-            type: "post",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            data: JSON.stringify(post),
-            success: (data) => {
-                this.showHiddenNewPostForm();
-         
-            }
-        });
+        fetch("post/createPost", {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(post)
+        })
+            .then(resp => resp.json())
+            .then(post => this.showHiddenNewPostForm())
     };
 
     newPostForm = () => {
@@ -113,10 +101,6 @@ class ReadBlog extends React.Component {
             padding: '10px',
             maxHeight: '80vh'
         };
-        var fixedMenu = {
-            backgroundColor: 'grey',
-            padding: '10px'
-        };
         var newPostStyles = {
             display: this.state.displayAddPostForm
         };
@@ -127,19 +111,16 @@ class ReadBlog extends React.Component {
                     <div style={blogStyles}>
                         <GetBlog
                             checkAuthor={this.checkAuthor}
-                            isAuthor={this.state.isAuthor}
                         />
-                        <GetPosts
-                            isAuthor={this.state.isAuthor}
-                        />
-                        {this.state.isAuthor &&
+                        <GetPosts />
+                      
                             <div id="newPost" style={newPostStyles}>
                                 {this.newPostForm()}
                             </div>
-                        }
+                        
                     </div>
                 }
-                {this.state.isAuthor &&
+                {this.props.blog.author === this.props.user.user.userName &&
                     <div style={fixedStyles}>
                         <Button onClick={this.showHiddenNewPostForm} color="primary">Dodaj post</Button>
                         <Button onClick={this.deleteBlog} color="danger">Usuń blog</Button>
@@ -155,7 +136,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  //  getPosts: (posts) => dispatch(getPosts(posts)),
     setBlogId: (blogId) => dispatch(setBlogId(blogId))
 });
 

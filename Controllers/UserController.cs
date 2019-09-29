@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MotoPasja.Models.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace MotoPasja.Controllers
 {
@@ -23,11 +25,34 @@ namespace MotoPasja.Controllers
         {
             AppUser user = await userManager.GetUserAsync(HttpContext.User);
 
-            Dictionary<string, string> userData = new Dictionary<string, string>();
-            userData.Add(nameof(user.UserName), user.UserName);
-            userData.Add(nameof(user.Email), user.Email);
+            return Json(new {
+                UserName = user.UserName,
+                Email = user.Email,
+                Avatar = "data:image/png;base64, " + Convert.ToBase64String(user.Avatar)
+            });
+        }
 
-            return Json(userData);
+        [HttpPost]
+        public async Task<JsonResult> UpdateAvatar()
+        {
+            AppUser user = await userManager.GetUserAsync(HttpContext.User);
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await Request.Form.Files[0].CopyToAsync(memoryStream);
+                user.Avatar = memoryStream.ToArray();
+            }
+
+            IdentityResult result = await userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                return Json("data:image/png;base64," + Convert.ToBase64String(user.Avatar));
+            } 
+            else
+            {
+                return Json(false);
+            }
         }
     }
 }

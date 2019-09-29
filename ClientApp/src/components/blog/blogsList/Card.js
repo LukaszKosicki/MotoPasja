@@ -1,46 +1,33 @@
 ﻿import React from 'react';
-import { Card, CardBody, CardTitle, CardText, CardImg } from 'reactstrap';
-import { NavLink } from 'react-router-dom';
+import { FormText, Card, CardBody, CardTitle, CardText, CardImg } from 'reactstrap';
+import { withRouter } from "react-router";
+import "./Card.css";
 
-export default class BlogCard extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            srcImages: "images/aaa.jpg"
-        };
-    }
-
-    componentDidMount() {
-        if (this.props.images.length != 0) {
-            this.setState({
-                srcImages: this.props.images[0].fileName
-            });
-        }
+class BlogCard extends React.Component {
+    loadBlog = () => {
+        this.props.history.push("/blog/" + this.props.idBlog);
     }
 
     render() {
-        var cardStyles = {
-            display: 'inline-block',
-            color: 'black'
-        };
-        var cardTextStyles = {
-            overflowY: 'scroll'
-        };
-
         return (
-            <NavLink to={"/blog/" + this.props.id} >
-                <Card className="BlogCard" style={cardStyles}>
-                    <input type="hidden" value={this.props.id} />
-                    <CardImg top width="100%" src={this.state.srcImages} alt="Card image cap" />
-                <CardBody>
+            <Card onClick={this.loadBlog}>
+                {this.props.miniature !== "" &&
+                    <CardImg top width="100%" src={"data:image/png;base64," + this.props.miniature} alt="Card image cap" />
+                }
+                    <CardBody>
                         <CardTitle>{this.props.title}</CardTitle>
-                        <CardText className="cardTextContent" style={cardTextStyles}>{this.props.contents}</CardText>
-                        <CardText className="cardTextSmall">
-                        <small className="text-muted">{this.props.dateOfAddition}</small>
+                    <CardText>{this.props.text}</CardText>
+                    <CardText className="cardInformation">
+                        <img className="cardAvatar" src={this.props.authorAvatar} />
+                        <div className="cardInformationText">
+                            <FormText className="text-muted">Autor: {this.props.author}</FormText>
+                            <FormText className="text-muted">Ostatnia aktywność: {this.props.lastEdition}</FormText>
+                        </div>
                     </CardText>
-                </CardBody>
-                </Card>
-            </NavLink>
+                    </CardBody>
+            </Card>           
             );
     }
 }
+
+export default withRouter(BlogCard);

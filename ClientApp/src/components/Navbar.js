@@ -15,6 +15,8 @@ import {
 import { Link } from 'react-router-dom';
 import { connect } from "react-redux";
 import { notLogged } from "../store/actions/user";
+import { withRouter } from "react-router-dom";
+import { Button } from "reactstrap";
 
 class Example extends React.Component {
     constructor(props) {
@@ -35,7 +37,7 @@ class Example extends React.Component {
     logout = () => {
         fetch("account/logout")
             .then(this.props.notLogged());
-        console.log(this.props);
+        this.props.history.push("/");
     }
 
     render() {
@@ -63,6 +65,10 @@ class Example extends React.Component {
                                     </DropdownItem>
                                 </DropdownMenu>
                             </UncontrolledDropdown>
+                            {this.props.isOnline &&
+                                <NavItem>
+                                    <NavLink tag={Link} to="/myProfile">Mój Profil</NavLink>
+                                </NavItem>}
                             {!this.props.isOnline &&
                                 <NavItem>
                                     <NavLink tag={Link} to="/login">Logowanie</NavLink>
@@ -85,11 +91,11 @@ class Example extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    isOnline: state.user.isOnline
+    isOnline: state.user.isOnline,
 });
 
 const mapDispatchToProps = dispatch => ({
     notLogged: () => dispatch(notLogged())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Example);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Example));

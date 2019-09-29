@@ -6,43 +6,64 @@ using Microsoft.AspNetCore.Mvc;
 using MotoPasja.Models.Blog;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity;
+using MotoPasja.Models.Identity;
 
 namespace MotoPasja.Controllers
 {
     [Authorize]
     public class PostController : Controller
     {
-        private IPostRepository repository;
+        private IPostRepository postRepository;
+        private IConfiguration configuration;
+        private UserManager<AppUser> userManager;
 
-        public PostController(IPostRepository repo) =>
-            this.repository = repo;
+        public PostController(IPostRepository postRepo, IConfiguration conf, UserManager<AppUser> usrMgr)
+        {
+            postRepository = postRepo;
+            configuration = conf;
+            userManager = usrMgr;
+        }
 
         [HttpGet]
         [AllowAnonymous]
         public JsonResult GetPosts(int blogId)
         {
-            return Json(repository.Posts.Include(p => p.Images)
-                .Where(p => p.BlogModelId == blogId));
+            return Json(postRepository.Posts.Include(p => p.Images).ToList()
+            .Join(userManager.Users, p => p.AuthorId, u => u.Id, (p, u) => new
+            {
+                p.Id,
+                p.BlogModelId,
+                Author = u.UserName,
+                p.Title,
+                p.Contents,
+                DateOfAddition = p.DateOfAddition.ToString("yyyy-MM-dd hh:mm"),
+                EditingDate = p.EditingDate.ToString("yyyy-MM-dd hh:mm"),
+                p.Images
+            }).Where(p => p.BlogModelId == blogId));
         }
         
         [HttpPost]
-        public JsonResult CreatePost([FromBody] PostModel model, int blogId)
+        public JsonResult CreatePost([FromBody] PostModel model)
         {
-            repository.CreatePost(model, blogId);
+            model.AuthorId = userManager.GetUserId(HttpContext.User);
+
+            postRepository.CreatePost(model, configuration["RootFolder"]);
             return Json("");
         }
 
         [HttpDelete]
         public JsonResult DeletePost(int postId)
         {
-            return Json(repository.DeletePost(postId, HttpContext.User.Identity.Name));
+            return Json(postRepository.DeletePost(postId, userManager.GetUserId(HttpContext.User)));
 
         }
 
         [HttpPatch]
         public JsonResult UpdatePost([FromBody] PostModel model)
         {
-            return Json(repository.UpdatePost(model, HttpContext.User.Identity.Name));
+            return Json(postRepository.UpdatePost(model, userManager.GetUserId(HttpContext.User)));
         }
     }
 }

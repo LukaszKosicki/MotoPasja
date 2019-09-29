@@ -1,7 +1,9 @@
 ﻿import React from 'react';
 import { Button } from 'reactstrap';
+import { connect } from "react-redux";
+import { getPostsFromServer } from "../../../store/actions/post";
 
-export default class ImageBox extends React.Component {
+class ImageBox extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -34,18 +36,24 @@ export default class ImageBox extends React.Component {
         var formData = new FormData();
 
         formData.append("image", e.target.files[0]);
-        formData.append("modelId", this.props.modelId);
+        formData.append("modelId", String(this.props.modelId).replace(/:/g, ';'));
         formData.append("fileName", this.props.fileName);
         formData.append("model", this.props.model);
 
-        var xhr = new XMLHttpRequest();
+        fetch("image/uploadImage", {
+            method: "post",
+            body: formData
+        })
+
+      /*  var xhr = new XMLHttpRequest();
         xhr.open("POST", "image/uploadImage");      
         xhr.send(formData);
-
+        */
         this.setState({
             loadDiv: 'block'
         });
 
+        /*
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 this.setState({
@@ -54,10 +62,12 @@ export default class ImageBox extends React.Component {
                 if (typeof this.props.modelId === 'number') {
                     if (this.props.model === 'blog') {
                         this.props.getBlog();
+                    } else if (this.props.model === 'post') {
+                        this.props.getPosts(this.props.blog.blogId);
                     }
                 }
             }
-        }
+        }*/
     }
 
     deleteImage = () => {
@@ -79,6 +89,8 @@ export default class ImageBox extends React.Component {
                 if (typeof this.props.modelId === 'number') {
                     if (this.props.model === 'blog') {
                         this.props.getBlog();
+                    } else if (this.props.model === 'post') {
+                        this.props.getPosts(this.props.blog.blogId);
                     }
                 }
             }
@@ -157,3 +169,13 @@ export default class ImageBox extends React.Component {
             );
     }
 }
+
+const mapStateToProps = state => ({
+    ...state
+});
+
+const mapDispatchToProps = dispatch => ({
+    getPosts: blogId => dispatch(getPostsFromServer(blogId))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ImageBox);

@@ -3,6 +3,7 @@ import Blog from './Blog';
 import { connect } from 'react-redux';
 import LoadingPage from '../../common/LoadingPage';
 import NoData from "../../common/NoData";
+import { setAuthor, setEditingDate, setRatingStars } from "../../../store/actions/blog";
 
 class GetBlog extends React.Component {
     constructor(props) {
@@ -10,24 +11,19 @@ class GetBlog extends React.Component {
         this.state = {
             blog: null
         };
+        this.getBlog();
     }
 
     getBlog = () => {
-        const url = 'blog/GetBlog/?id=' + this.props.blog.blogId;
-        const xhr = new XMLHttpRequest();
-        xhr.open('get', url, true);
-        xhr.onload = () => {
-            const data = JSON.parse(xhr.responseText);
-            this.props.checkAuthor(data.author);
-            this.setState({
-                blog: data
-            });
-        };
-        xhr.send();
-    }
-
-    componentDidMount() {
-        this.getBlog();
+        fetch("blog/GetBlog/?id=" + this.props.blog.blogId)
+            .then(resp => resp.json())
+            .then(blog => {
+                this.props.setAuthor(blog.author);
+                this.props.setEditingDate(blog.dateOfLastEdition);
+                this.setState({
+                    blog: blog
+                });
+            })
     }
 
     render() {
@@ -36,7 +32,6 @@ class GetBlog extends React.Component {
                 <Blog
                     {...this.state.blog}
                     getBlog={this.getBlog}
-                    isAuthor={this.props.isAuthor}
                 />
             );
         } else if (this.state.blog == null) {
@@ -55,4 +50,9 @@ const mapStateToProps = state => ({
     ...state
 });
 
-export default connect(mapStateToProps)(GetBlog);
+const mapDispatchToProps = dispatch => ({
+    setAuthor: author => dispatch(setAuthor(author)),
+    setEditingDate: date => dispatch(setEditingDate(date))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(GetBlog);

@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MotoPasja.Models.Blog
 {
-    [Authorize]
     public class EFRatingRepository : IRatingRepository
     {
         private ApplicationDbContext context;
@@ -16,7 +15,7 @@ namespace MotoPasja.Models.Blog
         public EFRatingRepository(ApplicationDbContext ctx) =>
             context = ctx;    
 
-        public bool AddRating(RatingBlogModel model, string userName)
+        public object AddRating(RatingBlogModel model, string userName)
         {
             var blog = context.Blogs.Include(b => b.Ratings).FirstOrDefault(b => b.Id == model.BlogModelId);
             if (blog.Ratings == null) blog.Ratings = new List<RatingBlogModel>();
@@ -47,10 +46,13 @@ namespace MotoPasja.Models.Blog
             blog.AverageRating = sum / blog.NumberOfRatings; 
             context.Blogs.Update(blog);
             context.SaveChanges();
-            return true;
+            return new
+            {
+                blog.AverageRating,
+                blog.NumberOfRatings
+            };
         }
 
-        [AllowAnonymous]
         public float GetAverageRating(int blogId)
         {
             return (context.Blogs.FirstOrDefault(b => b.Id == blogId).AverageRating);

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MotoPasja.Migrations
@@ -13,13 +14,14 @@ namespace MotoPasja.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Author = table.Column<string>(nullable: true),
                     Title = table.Column<string>(nullable: true),
                     Contents = table.Column<string>(nullable: true),
-                    DateOfAddition = table.Column<string>(nullable: true),
-                    EditingDate = table.Column<string>(nullable: true),
+                    AuthorId = table.Column<string>(nullable: true),
+                    DateOfAddition = table.Column<DateTime>(nullable: false),
+                    EditingDate = table.Column<DateTime>(nullable: false),
                     AverageRating = table.Column<float>(nullable: false),
-                    NumberOfRatings = table.Column<int>(nullable: false)
+                    NumberOfRatings = table.Column<int>(nullable: false),
+                    Miniature = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -32,7 +34,7 @@ namespace MotoPasja.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    FileName = table.Column<string>(nullable: true),
+                    Src = table.Column<string>(nullable: true),
                     Alt = table.Column<string>(nullable: true),
                     BlogModelId = table.Column<int>(nullable: false)
                 },
@@ -53,11 +55,11 @@ namespace MotoPasja.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Author = table.Column<string>(nullable: true),
                     Title = table.Column<string>(nullable: true),
                     Contents = table.Column<string>(nullable: true),
-                    DateOfAddition = table.Column<string>(nullable: true),
-                    EditingDate = table.Column<string>(nullable: true),
+                    AuthorId = table.Column<string>(nullable: true),
+                    DateOfAddition = table.Column<DateTime>(nullable: false),
+                    EditingDate = table.Column<DateTime>(nullable: false),
                     BlogModelId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -100,7 +102,7 @@ namespace MotoPasja.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    FileName = table.Column<string>(nullable: true),
+                    Src = table.Column<string>(nullable: true),
                     Alt = table.Column<string>(nullable: true),
                     PostModelId = table.Column<int>(nullable: false)
                 },

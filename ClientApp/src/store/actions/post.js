@@ -1,9 +1,10 @@
 ﻿export const SET_POSTS = "GET_POSTS";
+export const DELETE_POST = "DELETE_POST";
 
-export function getPosts(posts) {
+export function setPosts(posts) {
     return {
         type: "GET_POSTS",
-        posts: posts
+        posts
     };
 }
 
@@ -12,15 +13,7 @@ export function getPostsFromServer(blogId) {
         fetch("post/getPosts/?blogId=" + blogId, {method: "GET"})
             .then(res => res.json())
             .then(posts => {
-                dispatch(getPosts(posts));
+                dispatch(setPosts(posts));
             });
     }
 }
-
-/*
-const getPost = posts => ({
-    type: 'GET_POSTS',
-    posts
-});
-
-export default getPost;*/

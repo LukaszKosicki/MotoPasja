@@ -1,10 +1,11 @@
 ﻿export const IS_LOGGED = "IS_LOGGED";
 export const NOT_LOGGED = "NOT_LOGGED";
+export const UPDATE_AVATAR = "UPDATE_AVATAR";
 
 export function isLogged(user) {
     return {
         type: "IS_LOGGED",
-        user: user
+        user
     };
 }
 
@@ -12,6 +13,13 @@ export function notLogged() {
     return {
         type: "NOT_LOGGED"
     };
+}
+
+export function updateAvatar(avatar) {
+    return {
+        type: "UPDATE_AVATAR",
+        avatar
+    }
 }
 
 

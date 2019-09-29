@@ -1,45 +1,51 @@
 ﻿import React from 'react';
-import BlogCard from './Card';
-import './CardStyles.css';
-import $ from "jquery";
-import { connect } from 'react-redux';
 import LoadingPage from "../../common/LoadingPage";
 import NoData from '../../common/NoData';
+import { CardColumns } from "reactstrap";
+import BlogCard from "./Card";
 
-class GetBlogs extends React.Component {
+export default class GetBlogs extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             blogs: null
         };
-    }
 
-    getBlogs = () => {
-        $.ajax({
-            url: "blog/getBlogs",
-            method: "get",
-            success: (result) => {
-                this.setState({
-                    blogs: result
-                });
-            }
-        });
-    }
-
-    componentDidMount() {
         this.getBlogs();
     }
 
+    getBlogs = () => {
+        fetch("blog/getBlogs")
+            .then(resp => resp.json())
+            .then(resp => {
+                this.setState({
+                    blogs: resp
+                });
+            })
+    }
+    
     render() {
         if (this.state.blogs != null && this.state.blogs.length > 0) {
             var i = 1;
             return (
-                Object.keys(this.state.blogs).map((type) => {
-                    return (
-                        <BlogCard key={'blogCard' + (i++)}
-                            {...this.state.blogs[type]} />
-                    );
-                })
+                <CardColumns>
+                    {
+                        Object.keys(this.state.blogs).map((type) => {
+
+                            return (
+                                <BlogCard key={'blogCard' + (i++)}
+                                    idBlog={this.state.blogs[type].id}
+                                    title={this.state.blogs[type].title}
+                                    miniature={this.state.blogs[type].miniature}
+                                    text={this.state.blogs[type].contents}
+                                    lastEdition={this.state.blogs[type].dateOfLastEdition}
+                                    author={this.state.blogs[type].author}
+                                    authorAvatar={this.state.blogs[type].authorAvatar}
+                                />
+                            );
+                        })
+                    }
+                </CardColumns>
             );
         } else if (this.state.blogs == null) {
             return (
@@ -52,9 +58,3 @@ class GetBlogs extends React.Component {
         }     
     }
 }
-
-const mapStateToProps = state => ({
-    ...state
-});
-
-export default connect(mapStateToProps)(GetBlogs);

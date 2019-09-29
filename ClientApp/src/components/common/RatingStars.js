@@ -8,22 +8,38 @@ class RatingStars extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            rating: this.props.averageRating,
-            numberOfRating: this.props.numberOfRatings
-        };
+            averageRating: 0,
+            numberOfRatings: 0
+        }
+        this.getAverageRating();
     }
 
-    getRating = (newRating) => {
+    ratingChanged = newRating => {
         this.setState({
-            rating: newRating
+            averageRating: newRating
         });
     }
 
     sendRatingToServer = () => {
         var rating = {
             blogModelId: this.props.blog.blogId,
-            rating: this.state.rating
+            rating: this.state.averageRating
         };
+
+        fetch("rating/addRating", {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(rating)
+        })
+            .then(resp => resp.json())
+            .then(ret => {
+                this.setState({
+                    averageRating: ret.averageRating,
+                    numberOfRatings: ret.numberOfRatings
+                });
+            })
 
         $.ajax({
             url: "rating/addRating",
@@ -38,17 +54,14 @@ class RatingStars extends React.Component {
     }
 
     getAverageRating = () => {
-        $.ajax({
-            url: "rating/GetAverageRating/?blogId=" + this.props.blog.blogId,
-            type: "get",
-      
-            success: (data) => {
-                console.log(data);
+        fetch("rating/GetAverageRating/?blogId=" + this.props.blog.blogId)
+            .then(resp => resp.json())
+            .then(rat => {
                 this.setState({
-                    rating: data
+                    averageRating: rat.averageRating,
+                    numberOfRatings: rat.numberOfRatings
                 });
-            }
-        });
+            })
     }
 
     render() {
@@ -63,12 +76,12 @@ class RatingStars extends React.Component {
                 <div style={childDivStars}>
                     <ReactStars
                         count={this.props.count}
-                        value={this.state.rating}
+                        value={this.state.averageRating}
                         size={this.props.size}
                         color2={this.props.color2}
-                        onChange={this.getRating}
+                        onChange={this.ratingChanged}
                     />
-                    <FormText>({this.state.numberOfRating} głosów)</FormText>
+                    <FormText>({this.state.numberOfRatings} głosów)</FormText>
                     <Button type="button" onClick={this.sendRatingToServer} color="link">Wyślij</Button>
                 </div>
             </div>
