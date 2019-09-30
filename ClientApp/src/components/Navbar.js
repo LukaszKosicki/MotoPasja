@@ -41,8 +41,14 @@ class Example extends React.Component {
     }
 
     render() {
+        var navbarStyles = {
+            position: "fixed",
+            width: "100vw",
+            top: "0px",
+            zIndex: "1"
+        };
         return (
-            <div>
+            <div style={navbarStyles}>
                 <Navbar color="light" light expand="md">
                     <NavbarBrand href="/">MotoPasja</NavbarBrand>
                     <NavbarToggler onClick={this.toggle} />

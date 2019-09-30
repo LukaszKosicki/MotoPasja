@@ -12,7 +12,7 @@ import Statement from "../components/Statement";
 
 var containerStyles = {
     textAlign: 'center',
-    marginTop: '30px'
+    marginTop: '80px'
 };
 
 export default props => (

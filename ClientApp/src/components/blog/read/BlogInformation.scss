@@ -1,19 +1,96 @@
 ﻿@media (max-width: 575.98px) {
+    .blogInformation {
+        text-align: center;
+    }
+
+    .blogInformation > img {
+        max-height: 64px;
+        max-width: 64px;
+    }
+
+    .blogInformation > button {
+        margin-left: auto;
+        display: block;
+    }
     
+    .informations {
+        text-align: left;
+        margin-left: 30px;
+    } 
 }
 
 
 @media (min-width: 576px) and (max-width: 767.98px) {
-   
+    .blogInformation {
+        display: flex;
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .blogInformation > img {
+        max-height: 64px;
+        max-width: 64px;
+    }
+
+    .blogInformation > button {
+        position: absolute;
+        right: 0px;
+        top: 0px;
+    }
+
+    .informations {
+        text-align: left;
+        margin-left: 30px;
+    }  
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
-   
+    .blogInformation {
+        display: flex;
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .blogInformation > img {
+        max-height: 64px;
+        max-width: 64px;
+    }
+
+    .blogInformation > button {
+        position: absolute;
+        right: 0px;
+        top: 0px;
+    }
+
+    .informations {
+        text-align: left;
+        margin-left: 30px;
+    }  
 }
 
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
-    
+    .blogInformation {
+        display: flex;
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .blogInformation > img {
+        max-height: 64px;
+        max-width: 64px;
+    }
+
+    .blogInformation > button {
+        position: absolute;
+        right: 0px;
+        top: 0px;
+    }
+
+    .informations {
+        text-align: left;
+        margin-left: 30px;
+    }
 }
 
 
