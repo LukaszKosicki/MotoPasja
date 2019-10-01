@@ -40,34 +40,26 @@ class ImageBox extends React.Component {
         formData.append("fileName", this.props.fileName);
         formData.append("model", this.props.model);
 
-        fetch("image/uploadImage", {
-            method: "post",
-            body: formData
-        })
-
-      /*  var xhr = new XMLHttpRequest();
-        xhr.open("POST", "image/uploadImage");      
-        xhr.send(formData);
-        */
         this.setState({
             loadDiv: 'block'
         });
 
-        /*
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                this.setState({
-                    loadDiv: 'none'
-                });
+        fetch("image/uploadImage", {
+            method: "post",
+            body: formData
+        })
+            .then(res => {
                 if (typeof this.props.modelId === 'number') {
                     if (this.props.model === 'blog') {
                         this.props.getBlog();
                     } else if (this.props.model === 'post') {
                         this.props.getPosts(this.props.blog.blogId);
                     }
-                }
-            }
-        }*/
+                };
+                this.setState({
+                    loadDiv: 'none'
+                })
+            })
     }
 
     deleteImage = () => {
@@ -77,15 +69,14 @@ class ImageBox extends React.Component {
         formData.append("modelId", this.props.modelId);
         formData.append("model", this.props.model);
 
-        var xhr = new XMLHttpRequest();
-        xhr.open("delete", "image/deleteImage");
-        xhr.send(formData);
-
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4 && xhr.status === 200) {
+        fetch("image/deleteImage", {
+            method: "delete",
+            body: formData
+        })
+            .then(res => {
                 this.setState({
                     src: '/icons/addImage.png'
-                });
+                })
                 if (typeof this.props.modelId === 'number') {
                     if (this.props.model === 'blog') {
                         this.props.getBlog();
@@ -93,9 +84,7 @@ class ImageBox extends React.Component {
                         this.props.getPosts(this.props.blog.blogId);
                     }
                 }
-            }
-        }
-
+            })
     }
 
     render() {

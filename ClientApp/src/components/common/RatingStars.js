@@ -3,56 +3,82 @@ import ReactStars from 'react-stars';
 import { connect } from 'react-redux';
 import $ from 'jquery';
 import { Button, FormText } from 'reactstrap';
+import RatingForm from "../common/RatingForm";
 
 class RatingStars extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             averageRating: 0,
-            numberOfRatings: 0
+            numberOfRatings: 0,
+            voteCast: false,
+            userRating: 0,
+            showRatingForm: false
         }
         this.getAverageRating();
+        if (this.props.user.isOnline) {
+            this.didTheUserVote();
+        }
     }
 
-    ratingChanged = newRating => {
-        this.setState({
-            averageRating: newRating
-        });
-    }
-
-    sendRatingToServer = () => {
-        var rating = {
-            blogModelId: this.props.blog.blogId,
-            rating: this.state.averageRating
-        };
-
-        fetch("rating/addRating", {
-            method: "post",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(rating)
-        })
-            .then(resp => resp.json())
-            .then(ret => {
-                this.setState({
-                    averageRating: ret.averageRating,
-                    numberOfRatings: ret.numberOfRatings
-                });
+    showHidenRatingForm = () => {
+        if (this.state.showRatingForm) {
+            this.setState({
+                showRatingForm: false
             })
-
-        $.ajax({
-            url: "rating/addRating",
-            type: "post",
-            contentType: "application/json",
-            dataType: "json",
-            data: JSON.stringify(rating),
-            success: (data) => {
-                this.getAverageRating();
-            }
-        });
+        } else {
+            this.setState({
+                showRatingForm: true
+            })
+        }
     }
 
+    didTheUserVote = () => {
+        fetch("rating/didTheUserVote/?modelId=" + this.props.blog.blogId)
+            .then(res => res.json())
+            .then(res => {
+                console.log(res);
+                if (res.voteCast) {
+                    this.setState({
+                        voteCast: res.voteCast,
+                        userRating: res.rating,
+                    })
+                } else {
+                    this.setState({
+                        voteCast: false
+                    })
+                }
+            })
+    }
+
+
+
+    votedOrNot = () => {
+        if (this.props.user.isOnline) {
+            if (this.state.voteCast) {
+                return (
+                    <div className="left-text">
+                        <small className="my-block-element">Twoja ocena to: {this.state.userRating}</small>
+                        <small className="my-link" onClick={this.showHidenRatingForm}>Zmień ocenę</small>
+                    </div>
+                )
+            } else {
+                return (
+                    <div className="left-text">
+                        <small className="my-link" onClick={this.showHidenRatingForm}>Oceń blog</small>
+                    </div>
+                )
+            }
+        } else {
+            return (
+                <div className="left-text">
+                    <small className="my-link">Zaloguj się,</small>
+                    <small className="my-block-element">aby ocenić blog!</small>
+                </div>
+                )
+        }
+    }
+    
     getAverageRating = () => {
         fetch("rating/GetAverageRating/?blogId=" + this.props.blog.blogId)
             .then(resp => resp.json())
@@ -79,11 +105,22 @@ class RatingStars extends React.Component {
                         value={this.state.averageRating}
                         size={this.props.size}
                         color2={this.props.color2}
-                        onChange={this.ratingChanged}
+                        edit={false}
                     />
                     <FormText>({this.state.numberOfRatings} głosów)</FormText>
-                    <Button type="button" onClick={this.sendRatingToServer} color="link">Wyślij</Button>
+                    {this.votedOrNot()}
                 </div>
+                {this.state.showRatingForm &&
+                    <RatingForm
+                    count={this.props.count}
+                    value={this.state.averageRating}
+                    size={this.props.size}
+                    color2={this.props.color2}
+                    modelId={this.props.blog.blogId}
+                    getAverageRating={this.getAverageRating}
+                    showHidenRatingForm={this.showHidenRatingForm}
+                    />
+                }
             </div>
             );
     }
