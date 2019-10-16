@@ -1,9 +1,9 @@
 ﻿import React from 'react';
 import ReactStars from 'react-stars';
-import { connect } from 'react-redux';
-import $ from 'jquery';
-import { Button, FormText } from 'reactstrap';
+import { FormText, Button } from 'reactstrap';
 import RatingForm from "../common/RatingForm";
+import Login from "../../components/account/Login";
+import { connect } from "react-redux";
 
 class RatingStars extends React.Component {
     constructor(props) {
@@ -13,7 +13,8 @@ class RatingStars extends React.Component {
             numberOfRatings: 0,
             voteCast: false,
             userRating: 0,
-            showRatingForm: false
+            showRatingForm: false,
+            showLoginForm: false
         }
         this.getAverageRating();
         if (this.props.user.isOnline) {
@@ -21,14 +22,20 @@ class RatingStars extends React.Component {
         }
     }
 
-    showHidenRatingForm = () => {
-        if (this.state.showRatingForm) {
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.voteCast !== this.state.voteCast) {
+            this.didTheUserVote();
+        }
+    }
+
+    showHidenElement = (name) => {
+        if (this.state[name]) {
             this.setState({
-                showRatingForm: false
+                [name]: false
             })
         } else {
             this.setState({
-                showRatingForm: true
+                [name]: true
             })
         }
     }
@@ -37,7 +44,6 @@ class RatingStars extends React.Component {
         fetch("rating/didTheUserVote/?modelId=" + this.props.blog.blogId)
             .then(res => res.json())
             .then(res => {
-                console.log(res);
                 if (res.voteCast) {
                     this.setState({
                         voteCast: res.voteCast,
@@ -59,20 +65,22 @@ class RatingStars extends React.Component {
                 return (
                     <div className="left-text">
                         <small className="my-block-element">Twoja ocena to: {this.state.userRating}</small>
-                        <small className="my-link" onClick={this.showHidenRatingForm}>Zmień ocenę</small>
+                        <small className="my-link" onClick={() => this.showHidenElement("showRatingForm")}>
+                            Zmień ocenę</small>
                     </div>
                 )
             } else {
                 return (
                     <div className="left-text">
-                        <small className="my-link" onClick={this.showHidenRatingForm}>Oceń blog</small>
+                        <small className="my-link" name="showRatingForm" onClick={() => this.showHidenElement("showRatingForm")}>
+                            Oceń blog</small>
                     </div>
                 )
             }
         } else {
             return (
                 <div className="left-text">
-                    <small className="my-link">Zaloguj się,</small>
+                    <small className="my-link" onClick={() => this.showHidenElement("showLoginForm")}>Zaloguj się,</small>
                     <small className="my-block-element">aby ocenić blog!</small>
                 </div>
                 )
@@ -97,6 +105,22 @@ class RatingStars extends React.Component {
         var childDivStars = {
             display: 'inline-block'
         };
+        var loginForm = {
+            position: "fixed",
+            zIndex: "4",
+            top: "50%",
+            left: "0px",
+            transform: "translateY(-50%)",
+            backgroundColor: "#f8f9fa",
+            paddingTop: "10px",
+            paddingBottom: "10px",
+            width: "100%"
+        };
+        var btnAnulujLoginForm = {
+            margin: "auto",
+            display: "block",
+            martinTop: "5px"
+        };
         return (
             <div style={mainDivStarsStyles}>
                 <div style={childDivStars}>
@@ -110,6 +134,12 @@ class RatingStars extends React.Component {
                     <FormText>({this.state.numberOfRatings} głosów)</FormText>
                     {this.votedOrNot()}
                 </div>
+                {this.state.showLoginForm && !this.props.user.isOnline &&
+                    <div style={loginForm}>
+                        <Login />
+                        <Button style={btnAnulujLoginForm} color="danger" type="button" onClick={() => this.showHidenElement("showLoginForm")}>Anuluj</Button>
+                    </div>
+                }
                 {this.state.showRatingForm &&
                     <RatingForm
                     count={this.props.count}
@@ -118,9 +148,10 @@ class RatingStars extends React.Component {
                     color2={this.props.color2}
                     modelId={this.props.blog.blogId}
                     getAverageRating={this.getAverageRating}
-                    showHidenRatingForm={this.showHidenRatingForm}
-                    />
-                }
+                    showHidenRatingForm={() => this.showHidenElement("showRatingForm")}
+                    didTheUserVote={() => this.didTheUserVote()}
+                />
+            }
             </div>
             );
     }

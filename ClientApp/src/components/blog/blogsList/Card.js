@@ -12,7 +12,7 @@ class BlogCard extends React.Component {
         return (
             <Card onClick={this.loadBlog}>
                 {this.props.miniature !== "" &&
-                    <CardImg top width="100%" src={"data:image/png;base64," + this.props.miniature} alt="Card image cap" />
+                    <CardImg top width="100%" src={this.props.miniature} alt="Card image cap" />
                 }
                     <CardBody>
                         <CardTitle>{this.props.title}</CardTitle>

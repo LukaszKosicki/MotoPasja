@@ -12,5 +12,6 @@ namespace MotoPasja.Models
 
         public DbSet<BlogModel> Blogs { get; set; }
         public DbSet<PostModel> Posts { get; set; }
+        public DbSet<RatingBlogModel> BlogRatings { get; set; }
     }
 }

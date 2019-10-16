@@ -9,7 +9,8 @@ class CreateBlog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            createTime: ""
+            createTime: "",
+            isOpenAlert: false
         };
     }
 
@@ -19,9 +20,22 @@ class CreateBlog extends React.Component {
             + '-' + (time.getDay() < 10 ? '0' : '') + time.getDay() + ' '
             + (time.getHours() < 10 ? '0' : '') + time.getHours() + ':' + (time.getMinutes() < 10 ? '0' : '')
             + time.getMinutes() + ':' + (time.getSeconds() < 10 ? '0' : '') + time.getSeconds();
-        console.log(fullTime);
+
+        var isOpenAlert = false;
+
+        if (!this.props.isOnline) {
+            isOpenAlert = true;
+        }
+
         this.setState({
-            createTime: fullTime
+            createTime: fullTime,
+            isOpenAlert: isOpenAlert
+        });
+    }
+
+    dismissAlert = () => {
+        this.setState({
+            isOpenAlert: false
         });
     }
 
@@ -68,7 +82,7 @@ class CreateBlog extends React.Component {
         } else {
             return (
                 <div>
-                    <Alert color="warning">
+                    <Alert color="warning" isOpen={this.state.isOpenAlert} toggle={this.dismissAlert}>
                         Dodać blog mogą tylko zalogowani użytkownicy!
                     </Alert>
                     <Login />

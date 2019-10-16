@@ -9,8 +9,8 @@ namespace MotoPasja.Models
     {
         public int Id { get; set; }
         public float Rating { get; set; }
-        public string Author { get; set; }
-        public string DateOfAddition { get; set; }
-        public string EditingDate { get; set; }
+        public string AuthorId { get; set; }
+        public DateTime DateOfAddition { get; set; }
+        public DateTime EditingDate { get; set; }
     }
 }

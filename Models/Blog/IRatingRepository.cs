@@ -7,7 +7,8 @@ namespace MotoPasja.Models.Blog
 {
     public interface IRatingRepository
     {
-        object AddRating(RatingBlogModel model, string userName);
+        object AddRating(RatingBlogModel model);
+        object DidTheUserVote(int modelId, string userId);
         float GetAverageRating(int blogId);
         int GetNumberOfRatings(int blogId);
     }

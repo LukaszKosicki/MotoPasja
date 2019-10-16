@@ -50,6 +50,29 @@ namespace MotoPasja.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BlogRatings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Rating = table.Column<float>(nullable: false),
+                    AuthorId = table.Column<string>(nullable: true),
+                    DateOfAddition = table.Column<DateTime>(nullable: false),
+                    EditingDate = table.Column<DateTime>(nullable: false),
+                    BlogModelId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlogRatings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BlogRatings_Blogs_BlogModelId",
+                        column: x => x.BlogModelId,
+                        principalTable: "Blogs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
                 {
@@ -67,29 +90,6 @@ namespace MotoPasja.Migrations
                     table.PrimaryKey("PK_Posts", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Posts_Blogs_BlogModelId",
-                        column: x => x.BlogModelId,
-                        principalTable: "Blogs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RatingBlogModel",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Rating = table.Column<float>(nullable: false),
-                    Author = table.Column<string>(nullable: true),
-                    DateOfAddition = table.Column<string>(nullable: true),
-                    EditingDate = table.Column<string>(nullable: true),
-                    BlogModelId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RatingBlogModel", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RatingBlogModel_Blogs_BlogModelId",
                         column: x => x.BlogModelId,
                         principalTable: "Blogs",
                         principalColumn: "Id",
@@ -123,6 +123,11 @@ namespace MotoPasja.Migrations
                 column: "BlogModelId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BlogRatings_BlogModelId",
+                table: "BlogRatings",
+                column: "BlogModelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PostImage_PostModelId",
                 table: "PostImage",
                 column: "PostModelId");
@@ -130,11 +135,6 @@ namespace MotoPasja.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_BlogModelId",
                 table: "Posts",
-                column: "BlogModelId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RatingBlogModel_BlogModelId",
-                table: "RatingBlogModel",
                 column: "BlogModelId");
         }
 
@@ -144,10 +144,10 @@ namespace MotoPasja.Migrations
                 name: "BlogImage");
 
             migrationBuilder.DropTable(
-                name: "PostImage");
+                name: "BlogRatings");
 
             migrationBuilder.DropTable(
-                name: "RatingBlogModel");
+                name: "PostImage");
 
             migrationBuilder.DropTable(
                 name: "Posts");

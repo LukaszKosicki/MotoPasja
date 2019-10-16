@@ -12,6 +12,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.IO;
+using System.Net.Mail;
+using MotoPasja.Services;
 
 namespace MotoPasja.Controllers
 {
@@ -42,28 +44,38 @@ namespace MotoPasja.Controllers
 
                 if (result.Succeeded)
                 {
+                    string confirmationToken = userManager
+                        .GenerateEmailConfirmationTokenAsync(newUser).Result;
+                    string confirmationLink = Url.Action("ConfirmEmail",
+                      "Account", new
+                      {
+                          userid = newUser.Id,
+                          token = confirmationToken
+                      },
+                       protocol: HttpContext.Request.Scheme);
+
+                    MailMessage mes = new MailMessage("kontakt@from0to-fullstackdeveloper.pl", "lukaszvip166@onet.pl",
+                        "aktywuj", confirmationLink);
+
+                    MyEmailClient myEmailClient = new MyEmailClient();
+                    await myEmailClient.SendEmail(mes);
+
                     return Json(new
                     {
                         Success = true,
                         Message = "Grtulacje!"
                     }); 
                 }
-                else
+                return Json(new
                 {
-                    return Json(new
-                    {
-                        Success = false,
-                        Message = "Coś Poszło nie tak. Spróbuj jeszcze raz!"
-                    });
-                }
-            }
-            else
-            {
-                return Json(new {
                     Success = false,
-                    Message = "Wprowadzone dane są nieprawidłowe. Popraw je i spróbuj jeszcze raz!"
-                });
+                    Message = "Coś Poszło nie tak. Spróbuj jeszcze raz!"
+                });            
             }
+            return Json(new {
+                Success = false,
+                Message = "Wprowadzone dane są nieprawidłowe. Popraw je i spróbuj jeszcze raz!"
+            });
         }
 
         [HttpPost]
@@ -91,31 +103,34 @@ namespace MotoPasja.Controllers
                             user.Email
                         });
                     }
-                    else
-                    {
-                        return Json(new {
-                            Success = false,
-                            Message = "Nieprawidłowe hasło lub e-mail"
-                        });
-                    }
-                }
-                else
-                {
-                    return Json(new
-                    {
+                    return Json(new {
                         Success = false,
-                        Message = $"Użytkownik o adresie e=mail: {model.Email} nie istnieje."
+                        Message = "Nieprawidłowe hasło lub e-mail"
                     });
                 }
-            }
-            else 
-            {
                 return Json(new
                 {
                     Success = false,
-                    Message = $"Wprowadzone dane są nieprawidłowe."
+                    Message = $"Użytkownik o adresie e=mail: {model.Email} nie istnieje."
                 });
-            } 
+            }    
+            return Json(new
+            {
+                Success = false,
+                Message = $"Wprowadzone dane są nieprawidłowe."
+            });
+        } 
+
+        public async Task<ActionResult> ConfirmEmail(string userId, string token)
+        {
+            AppUser user = await userManager.FindByIdAsync(userId);
+            IdentityResult result = userManager.ConfirmEmailAsync(user, token).Result;
+  
+            if (result.Succeeded)
+            {
+                return Redirect(@"https://localhost:44308/#/emailConfirmed");
+            }
+            return Redirect(@"https://localhost:44308/#/unconfirmedEmail");
         }
 
         public async Task<JsonResult> Logout()

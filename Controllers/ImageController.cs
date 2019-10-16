@@ -31,7 +31,7 @@ namespace MotoPasja.Controllers
         public async Task UploadImage()
         {
             var modelId = Request.Form["modelId"];
-            var fileName = Request.Form["fileName"];
+            string fileName = Request.Form["fileName"];
             var model = Request.Form["model"];
 
             string pathToFolder = Path.Combine(Directory.GetCurrentDirectory(),

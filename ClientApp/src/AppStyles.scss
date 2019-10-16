@@ -1,4 +1,5 @@
-﻿@media (max-width: 575.98px) {
+﻿/*
+@media (max-width: 575.98px) {
     h1 {
         font-size: 1.5rem;
     }
@@ -48,7 +49,21 @@
 
 @media (min-width: 1200px) {
 }
-
+    */
 p {
     text-align: justify;
+}
+
+.my-link {
+    color: #007bff;
+}
+
+.my-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.my-block-element {
+    display: block;
 }

@@ -33,15 +33,25 @@ namespace MotoPasja
             options.UseSqlServer(
                 Configuration["Data:MotoPasjaIdentity:ConnectionString"]));
 
-            services.AddIdentity<AppUser, IdentityRole>()
+            services.AddIdentity<AppUser, IdentityRole>(opts => {
+                opts.Password.RequiredLength = 8;
+                opts.Password.RequireNonAlphanumeric = true;
+                opts.Password.RequireLowercase = true;
+                opts.Password.RequireUppercase = true;
+                opts.Password.RequireDigit = true;
+                opts.User.RequireUniqueEmail = true;
+                opts.SignIn.RequireConfirmedEmail = true;
+            })
                 .AddEntityFrameworkStores<AppIdentityDbContext>()
                 .AddDefaultTokenProviders();
+
+
         
             services.AddTransient<IBlogRepository, EFBlogRepository>();
             services.AddTransient<IPostRepository, EFPostRepository>();
             services.AddTransient<IImageRepository, EFImageRepository>();
             services.AddTransient<IRatingRepository, EFRatingRepository>();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);         
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -70,7 +80,7 @@ namespace MotoPasja
             app.UseAuthentication();
 
             app.UseMvc(routes =>
-            {
+            {            
                 routes.MapRoute(
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");

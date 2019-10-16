@@ -35,6 +35,7 @@ export default class RatingForm extends React.Component {
             .then(ret => {
                 this.props.getAverageRating();
                 this.props.showHidenRatingForm();
+                this.props.didTheUserVote();
             })
     }
 

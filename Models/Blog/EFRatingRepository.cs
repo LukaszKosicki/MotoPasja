@@ -15,30 +15,28 @@ namespace MotoPasja.Models.Blog
         public EFRatingRepository(ApplicationDbContext ctx) =>
             context = ctx;    
 
-        public object AddRating(RatingBlogModel model, string userName)
+        public object AddRating(RatingBlogModel model)
         {
             var blog = context.Blogs.Include(b => b.Ratings).FirstOrDefault(b => b.Id == model.BlogModelId);
-            if (blog.Ratings == null) blog.Ratings = new List<RatingBlogModel>();
-            RatingBlogModel rating = blog.Ratings.FirstOrDefault(r => r.Author == userName);
+           
+            RatingBlogModel rating = blog.Ratings.FirstOrDefault(r => r.AuthorId == model.AuthorId);
 
-            string data = MyDate.GetDate_ddmmrrrr_ggmm_Format();
-
-            if (rating != null && rating.Author == userName)
+            if (rating != null)
             {
                 rating.Rating = model.Rating;
-                rating.EditingDate = data;
+                rating.EditingDate = DateTime.Now;
             }
             else
             {
-                
-                blog.Ratings.Add(new RatingBlogModel
+                rating = new RatingBlogModel
                 {
+                    AuthorId = model.AuthorId,
                     Rating = model.Rating,
-                    Author = userName,
-                    DateOfAddition = data,
-                    EditingDate = data,
-                    
-                });
+                    EditingDate = DateTime.Now,
+                    DateOfAddition = DateTime.Now
+                };
+
+                blog.Ratings.Add(rating);
                 blog.NumberOfRatings++;
             }
 
@@ -51,6 +49,28 @@ namespace MotoPasja.Models.Blog
                 blog.AverageRating,
                 blog.NumberOfRatings
             };
+        }
+
+        public object DidTheUserVote(int modelId, string userId)
+        {
+            RatingBlogModel rating = context.BlogRatings
+                .FirstOrDefault(r => r.BlogModelId == modelId && r.AuthorId == userId);
+
+            if (rating != null)
+            {
+                return new
+                {
+                    VoteCast = true,
+                    rating.Rating
+                };
+            }
+            else
+            {
+                return new
+                {
+                    VoteCast = false
+                };
+            }
         }
 
         public float GetAverageRating(int blogId)

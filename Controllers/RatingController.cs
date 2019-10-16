@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MotoPasja.Models.Blog;
+using MotoPasja.Models.Identity;
 
 namespace MotoPasja.Controllers
 {
@@ -12,14 +14,25 @@ namespace MotoPasja.Controllers
     public class RatingController : Controller
     {
         private IRatingRepository repository;
+        private UserManager<AppUser> userManager;
 
-        public RatingController(IRatingRepository repo) =>
+        public RatingController(IRatingRepository repo, UserManager<AppUser> usrMgr)
+        {
             repository = repo;
+            userManager = usrMgr;
+        }
 
         [HttpPost]
         public JsonResult AddRating([FromBody] RatingBlogModel model)
         {
-            return Json(repository.AddRating(model, HttpContext.User.Identity.Name));
+            model.AuthorId = userManager.GetUserId(HttpContext.User);
+            return Json(repository.AddRating(model));
+        }
+
+        [HttpGet]
+        public JsonResult DidTheUserVote(int modelId)
+        { 
+            return Json(repository.DidTheUserVote(modelId, userManager.GetUserId(HttpContext.User)));
         }
 
         [HttpGet]

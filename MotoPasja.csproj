@@ -17,14 +17,17 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="ClientApp\src\components\statement\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="ClientApp\src\components\statement\**" />
+    <EmbeddedResource Remove="ClientApp\src\components\statement\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="ClientApp\src\components\statement\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="ClientApp\public\images\blog\" />
-    <Folder Include="ClientApp\src\components\statement\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
@@ -51,5 +54,7 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1development_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

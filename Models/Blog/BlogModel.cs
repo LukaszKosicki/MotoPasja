@@ -11,11 +11,6 @@ namespace MotoPasja.Models.Blog
     {
         public float AverageRating { get; set; }
         public int NumberOfRatings { get; set; }
-        public byte[] Miniature { get; set; }
-        [NotMapped]
-        public string Author { get; set; }
-        [NotMapped]
-        public string AuthorAvatar { get; set; }
         public List<PostModel> Posts { get; set; }
         public List<BlogImage> Images { get; set; }
         public List<RatingBlogModel> Ratings {get; set;}

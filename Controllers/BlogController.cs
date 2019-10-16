@@ -31,7 +31,12 @@ namespace MotoPasja.Controllers
         [AllowAnonymous]
         public JsonResult GetBlogs()
         {
-            return Json(blogRepository.Blogs.ToList().Join(userManager.Users,
+            var bl = blogRepository.Blogs.Include(b => b.Images).ToList().Join(userManager.Users.Select(u => new
+            {
+                u.Id,
+                u.UserName,
+                u.Avatar
+            }),
                 b => b.AuthorId,
                 u => u.Id,
                 (b, u) => new
@@ -39,14 +44,36 @@ namespace MotoPasja.Controllers
                     b.Id,
                     Author = u.UserName,
                     AuthorAvatar = u.Avatar != null ? "data:image/png;base64," + Convert.ToBase64String(u.Avatar) : "icons/user.png",
-                    Miniature = b.Miniature != null ? Convert.ToBase64String(b.Miniature) : "",
+                    Miniature = b.Images.Count > 0 ? b.Images[0].Src : "",
+                    DateOfLastEdition = b.EditingDate.ToString("yyyy-MM-dd hh:mm"),
+                    b.Contents,
+                    b.AverageRating,
+                    b.Title
+                });
+            return Json(bl);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<JsonResult> GetUserBlogs(string userName)
+        {
+            AppUser user = await userManager.FindByNameAsync(userName);
+            string userID = await userManager.GetUserIdAsync(user);
+
+            return Json(blogRepository.Blogs.Include(b => b.Images).Where(b => b.AuthorId == userID)
+                .ToList().Join(userManager.Users, b => b.AuthorId, u => u.Id, (b, u) => new
+                {
+                    b.Id,
+                    Author = u.UserName,
+                    AuthorAvatar = u.Avatar != null ? "data:image/png;base64," + Convert.ToBase64String(u.Avatar) : "icons/user.png",
+                    Miniature = b.Images.Count > 0 ? b.Images[0].Src : "",
                     DateOfLastEdition = b.EditingDate.ToString("yyyy-MM-dd hh:mm"),
                     b.Contents,
                     b.AverageRating,
                     b.Title
                 }));
         }
-
+        
         [HttpGet]
         [AllowAnonymous]
         public JsonResult GetBlog(int id)
@@ -68,13 +95,13 @@ namespace MotoPasja.Controllers
                     b.Title
                 }).FirstOrDefault(b => b.Id == id));
         }
-           
+         
         [HttpPost]
-        public async Task<JsonResult> CreateBlog([FromBody] BlogModel model)
+        public JsonResult CreateBlog([FromBody] BlogModel model)
         {
             model.AuthorId = userManager.GetUserId(HttpContext.User);
 
-            await blogRepository.CreateBlog(model, configuration["RootFolder"]);
+            blogRepository.CreateBlog(model, configuration["RootFolder"]);
             return Json(model.Id);
         }
 

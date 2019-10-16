@@ -9,7 +9,7 @@ namespace MotoPasja.Models.Blog
     public interface IBlogRepository
     {
         IQueryable<BlogModel> Blogs { get; } 
-        Task CreateBlog(BlogModel model, string mainFolder);
+        void CreateBlog(BlogModel model, string mainFolder);
         bool DeleteBlog(int blogId, string authorId);
         bool UpdateBlog(BlogModel model, string authorId);
     }

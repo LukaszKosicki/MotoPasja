@@ -10,7 +10,7 @@ using MotoPasja.Models;
 namespace MotoPasja.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190927075023_Initial")]
+    [Migration("20191001092518_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,13 +117,13 @@ namespace MotoPasja.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Author");
+                    b.Property<string>("AuthorId");
 
                     b.Property<int>("BlogModelId");
 
-                    b.Property<string>("DateOfAddition");
+                    b.Property<DateTime>("DateOfAddition");
 
-                    b.Property<string>("EditingDate");
+                    b.Property<DateTime>("EditingDate");
 
                     b.Property<float>("Rating");
 
@@ -131,7 +131,7 @@ namespace MotoPasja.Migrations
 
                     b.HasIndex("BlogModelId");
 
-                    b.ToTable("RatingBlogModel");
+                    b.ToTable("BlogRatings");
                 });
 
             modelBuilder.Entity("MotoPasja.Models.Blog.BlogImage", b =>

@@ -45,19 +45,13 @@ namespace MotoPasja.Models.Blog
                 ).FirstOrDefault(b => b.Id == blogId);
         }
         
-        public async Task CreateBlog(BlogModel model, string mainFolder)
+        public void CreateBlog(BlogModel model, string mainFolder)
         {
             //pierwszy zapis bloga, w celu uzyskania ID
             context.Blogs.Add(model);
             context.SaveChanges();
 
             PathCRUD.AddImageToNewRegistration(model, "blog", mainFolder);
-
-            if (model.Images != null && model.Images.Count > 0)
-            {
-                string[] images = Directory.GetFiles(MyPath.GetPath(mainFolder, "blog", model.Id.ToString()));    
-                model.Miniature = await System.IO.File.ReadAllBytesAsync(images[0]);              
-            }
 
             //aktualizacja dat w modelu bloga
             model.DateOfAddition = DateTime.Now;

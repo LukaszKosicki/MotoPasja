@@ -1,78 +1,43 @@
 ﻿import React from 'react';
-import { FormFeedback, Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import Email from "../../js/Email";
-import Text from "../../js/Text";
+import { Button, Form, Alert } from 'reactstrap';
 import './FormStyles.css';
 import { connect } from 'react-redux';
-import { isLogged } from "../../store/actions/user";
+import { isLogged } from "../../store/actions/loggedUser";
 import { withRouter } from "react-router-dom";
+import EmailFormGroup from "./container/EmailFormGroup";
+import PasswordFormGroup from "./container/PasswordFormGroup";
+import { resetForm } from "../../store/actions/loginRegisterForm";
 
 class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: {
-                value: "",
-                valid: false,
-                invalid: false,
-                statement: ""
-            },
-            password: {
-                value: "",
-                valid: false,
-                invalid: false,
-                statement: ""
-            }
+            check: false,
+            isOpenAlert: false
         };
+        this.props.resetForm();
     }
 
-    handleChange = event => {
-        var valid = false;
-        var invalid = false;
-        var statement = "";
-
-        if (event.target.name === "email") {
-            if (Email.CheckEmail(event.target.value)) {
-                valid = true;
-                invalid = false;
-                statement = "Adres jest prawidłowy :)";
-            } else {
-                valid = false;
-                invalid = true;
-                statement = "Niepoprawny adres e-mail!";
-            }
-        }
-
-        if (event.target.name === "password") {
-            if (Text.IsNullOrEmpty(event.target.value)) {
-                valid = true;
-                invalid = false;
-                statement = ""
-            } else {
-                valid = false;
-                invalid = true;
-                statement = "Wpisz poprawne hasło!"
-            }
-        }
-
+    dismissAlert = () => {
         this.setState({
-            [event.target.name]: {
-                ...this.state[event.target.name],
-                value: event.target.value,
-                valid: valid,
-                invalid: invalid,
-                statement: statement
-            }
+            isOpenAlert: false
         });
     }
 
+    changeCheck = () => {
+        this.setState({
+            check: !this.state.check
+        })
+    }
+
     login = () => {
+        this.changeCheck();
         var loginModel = {
-            email: this.state.email["value"],
-            password: this.state.password["value"]
+            email: this.props.email["value"],
+            password: this.props.password["value"]
         };
 
-        if (this.state.email["valid"] && this.state.password["valid"]) {
+        if (this.props.email["valid"] === true && this.props.password["valid"] === true) {
             fetch("account/login", {
                 method: "post",
                 headers: {
@@ -91,6 +56,10 @@ class Login extends React.Component {
                         alert(resp.message);
                     }
                 })
+        } else {
+            this.setState({
+                isOpenAlert: true
+            });
         }
     }
 
@@ -105,22 +74,24 @@ class Login extends React.Component {
         };
         return (
             <div style={parentDiv}>
+                <Alert color="danger" isOpen={this.state.isOpenAlert} toggle={this.dismissAlert}>
+                    Żeby się zalogować uzupełnij poprawnie formularz!
+                    </Alert>
                 <div className="loginForm" style={childDiv}>
                     <Form>
                         <div style={parentDiv}>
                             <h4>Logowanie</h4>
                             <hr />
                         </div>
-                        <FormGroup>
-                            <Label for="exampleEmail">Email</Label>
-                            <Input valid={this.state.email["valid"]} invalid={this.state.email["invalid"]} onChange={this.handleChange} type="email" name="email" id="exampleEmail" />
-                            <FormFeedback valid={this.state.email["valid"]}>{this.state.email["statement"]}</FormFeedback>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="examplePassword">Password</Label>
-                            <Input valid={this.state.password["valid"]} invalid={this.state.password["invalid"]} onChange={this.handleChange} type="password" name="password" id="examplePassword" />
-                            <FormFeedback valid={this.state.password["valid"]}>{this.state.password["statement"]}</FormFeedback>
-                        </FormGroup>
+                        <EmailFormGroup
+                            changeCheck={this.changeCheck}
+                            check={this.state.check}
+                        />
+                        <PasswordFormGroup
+                            changeCheck={this.changeCheck}
+                            formName="login"
+                            check={this.state.check}
+                        />
                         <div style={parentDiv}>
                             <Button type="button" onClick={this.login} color="primary">Zaloguj</Button>
                             <Button type="button" color="link">Nie pamiętam hasła</Button>
@@ -132,15 +103,15 @@ class Login extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        ...state
-    }
-}
+const mapStateToProps = state => ({
+    email: state.form.email,
+    password: state.form.password
+});
 
 const mapDispatchToProps = dispatch => {
     return {
-        isLogged: (user) => dispatch(isLogged(user))
+        isLogged: (user) => dispatch(isLogged(user)),
+        resetForm: () => dispatch(resetForm())
     }
 };
 

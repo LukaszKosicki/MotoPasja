@@ -14,7 +14,7 @@ import {
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { connect } from "react-redux";
-import { notLogged } from "../store/actions/user";
+import { notLogged } from "../store/actions/loggedUser";
 import { withRouter } from "react-router-dom";
 import { Button } from "reactstrap";
 
@@ -26,6 +26,10 @@ class Example extends React.Component {
         this.state = {
             isOpen: false
         };
+    }
+
+    componentDidMount() {
+        console.log(this.props);
     }
 
     toggle () {
@@ -45,7 +49,7 @@ class Example extends React.Component {
             position: "fixed",
             width: "100vw",
             top: "0px",
-            zIndex: "1"
+            zIndex: "2"
         };
         return (
             <div style={navbarStyles}>
@@ -73,7 +77,7 @@ class Example extends React.Component {
                             </UncontrolledDropdown>
                             {this.props.isOnline &&
                                 <NavItem>
-                                    <NavLink tag={Link} to="/myProfile">Mój Profil</NavLink>
+                                <NavLink tag={Link} to={"/myProfile/" + this.props.userName}>Mój Profil</NavLink>
                                 </NavItem>}
                             {!this.props.isOnline &&
                                 <NavItem>
@@ -85,7 +89,7 @@ class Example extends React.Component {
                                 </NavItem>}
                             {this.props.isOnline &&
                                 <NavItem>
-                                    <NavLink onClick={this.logout}>Wyloguj</NavLink>
+                                <NavLink tag={Link} to="/" onClick={this.logout}>Wyloguj</NavLink>
                                 </NavItem>
                             }
                         </Nav>
@@ -98,6 +102,7 @@ class Example extends React.Component {
 
 const mapStateToProps = state => ({
     isOnline: state.user.isOnline,
+    userName: state.user.user.userName
 });
 
 const mapDispatchToProps = dispatch => ({

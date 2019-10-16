@@ -1,116 +1,45 @@
 ﻿import React from 'react';
-import { Col, FormFeedback, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
-import $ from 'jquery';
-import Text from "../../js/Text";
-import Email from "../../js/Email";
+import { Button, Form, Alert } from 'reactstrap';
+import ConfirmedPasswordFormGroup from "../account/container/ConfirmedPasswordFormGroup";
+import EmailFormGroup from "../account/container/EmailFormGroup";
+import PasswordFormGroup from "../account/container/PasswordFormGroup";
+import UserNameFormGroup from "../account/container/UserNameFormGroup";
 import './FormStyles.css';
+import { connect } from "react-redux";
+import { resetForm } from "../../store/actions/loginRegisterForm";
 
-export default class Register extends React.Component {
+class Register extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            nick: {
-                value: "",
-                valid: false,
-                invalid: false,
-                statement: ""
-            },
-            email: {
-                value: "",
-                valid: false,
-                invalid: false,
-                statemant: ""
-            },
-            password: {
-                value: "",
-                valid: false,
-                invalid: false,
-                statement: ""
-            },
-            passwordRepeated: {
-                value: "",
-                valid: false,
-                invalid: false,
-                statement: ""
-            },
+            check: false,
+            isOpenAlert: false
         };
+        this.props.resetForm();
     }
 
-    handleChange = event => {
-        var valid = false;
-        var invalid = false;
-        var statement = "";
-
-        if (event.target.name === "nick") {
-            if (Text.IsNullOrEmpty(event.target.value)) {
-                valid = true;
-                invalid = false;
-                statement = "Może być :)";
-            } else {
-                valid = false;
-                invalid = true;
-                statement = "Błędny nick! Sprawdź czy w nicku nie ma pustych znaków.";
-            }
-        }
-
-        if (event.target.name === "email") {
-            if (Email.CheckEmail(event.target.value)) {
-                valid = true;
-                invalid = false;
-                statement = "Adres jest prawidłowy :)";
-            } else {
-                valid = false;
-                invalid = true;
-                statement = "Niepoprawny adres e-mail!";
-            }
-        }
-
-        if (event.target.name === "password") {
-            if (Text.CheckPassword(event.target.value)) {
-                valid = true;
-                invalid = false;
-                statement = "Może być :)";
-                
-            } else {
-                valid = false;
-                invalid = true;
-                statement = "Hasło musi zawierać conajmniej jedną małą i dużą literę, liczbę oraz znak specjalny!";
-            }
-        }
-
-        if (event.target.name === "passwordRepeated") {
-            if (this.state.password["value"] === event.target.value) {
-                valid = true;
-                invalid = false;
-                statement = "Hasła są zgodne.";
-            } else {
-                valid = false;
-                invalid = true;
-                statement = "Hasła muszą być identyczne!";
-            }
-        }
-
+    dismissAlert = () => {
         this.setState({
-            [event.target.name]: {
-                ...this.state[event.target.name],
-                value: event.target.value,
-                valid: valid,
-                invalid: invalid,
-                statement: statement
-            }
+            isOpenAlert: false
         });
     }
 
+    changeCheck = () => {
+        this.setState({
+            check: !this.state.check
+        });
+    }
+ 
     register = () => {
         var registerModel = {
-            userName: this.state.nick["value"],
-            email: this.state.email["value"],
-            password: this.state.password["value"],
-            passwordRepeated: this.state.passwordRepeated["value"]
+            userName: this.props.userName["value"],
+            email: this.props.email["value"],
+            password: this.props.password["value"],
+            passwordRepeated: this.props.confirmedPassword["value"]
         };
 
-        if (this.state.nick["valid"] && this.state.email["valid"] && this.state.password["valid"] &&
-            this.state.passwordRepeated["valid"]) {
+        if (this.props.userName["valid"] && this.props.email["valid"] &&
+            this.props.password["valid"] && this.props.confirmedPassword["valid"]) {
             fetch("account/register", {
                 method: "post",
                 headers: {
@@ -133,7 +62,10 @@ export default class Register extends React.Component {
                     }
                 })
         } else {
-            alert("Żeby się zarejestrować popraw błędy w formularzu!");
+            this.changeCheck();
+            this.setState({
+                isOpenAlert: true
+            });
         }
     }
 
@@ -148,6 +80,9 @@ export default class Register extends React.Component {
         };
         return (
             <div>
+                <Alert color="danger" isOpen={this.state.isOpenAlert} toggle={this.dismissAlert}>
+                    Żeby się zarejestrować uzupełnij poprawnie formularz!
+                </Alert>
                 <div style={parentDiv}>
                     <div className="loginForm" style={childDiv}>
                         <Form>
@@ -155,26 +90,23 @@ export default class Register extends React.Component {
                                 <h4>Rejestracja</h4>
                                 <hr />
                             </div>
-                            <FormGroup>
-                                <Label for="exampleNick">Nick</Label>
-                                <Input valid={this.state.nick["valid"]} invalid={this.state.nick["invalid"]} onChange={this.handleChange} type="text" name="nick" id="exampleNick" />
-                                <FormFeedback valid={this.state.nick["valid"]}>{this.state.nick["statement"]}</FormFeedback>
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="exampleEmail">Email</Label>
-                                <Input valid={this.state.email["valid"]} invalid={this.state.email["invalid"]} onChange={this.handleChange} type="email" name="email" id="exampleEmail" />
-                                <FormFeedback valid={this.state.email["valid"]}>{this.state.email["statement"]}</FormFeedback>
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="examplePassword">Hasło</Label>
-                                <Input valid={this.state.password["valid"]} invalid={this.state.password["invalid"]} onChange={this.handleChange} type="password" name="password" id="examplePassword" />
-                                <FormFeedback valid={this.state.password["valid"]}>{this.state.password["statement"]}</FormFeedback>
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="examplePasswordRepeated">Powtórz hasło</Label>
-                                <Input valid={this.state.passwordRepeated["valid"]} invalid={this.state.passwordRepeated["invalid"]} onChange={this.handleChange} type="password" name="passwordRepeated" id="examplePasswordRepeated" />
-                                <FormFeedback valid={this.state.passwordRepeated["valid"]}>{this.state.passwordRepeated["statement"]}</FormFeedback>
-                            </FormGroup>
+                            <UserNameFormGroup
+                                changeCheck={this.changeCheck}
+                                check={this.state.check}
+                            />
+                            <EmailFormGroup
+                                changeCheck={this.changeCheck}
+                                check={this.state.check}
+                            />
+                            <PasswordFormGroup
+                                changeCheck={this.changeCheck}
+                                check={this.state.check}
+                                formName="registration"
+                            />
+                            <ConfirmedPasswordFormGroup
+                                changeCheck={this.changeCheck}
+                                check={this.state.check}
+                            />
                             <div style={parentDiv}>
                                 <Button onClick={this.register} type="button" color="primary">Zarejestruj się</Button>
                             </div>
@@ -185,3 +117,16 @@ export default class Register extends React.Component {
             );
     }
 }
+
+const mapStateToProps = state => ({
+    userName: state.form.userName,
+    email: state.form.email,
+    password: state.form.password,
+    confirmedPassword: state.form.confirmedPassword
+});
+
+const mapDispatchToProps = dispatch => ({
+    resetForm: () => dispatch(resetForm())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Register);

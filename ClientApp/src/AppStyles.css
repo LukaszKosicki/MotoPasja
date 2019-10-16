@@ -1,44 +1,71 @@
+/*
 @media (max-width: 575.98px) {
-  h1 {
-    font-size: 1.5rem;
-  }
+    h1 {
+        font-size: 1.5rem;
+    }
 
-  p {
-    font-size: 0.6rem;
-  }
+    p {
+        font-size: 0.6rem;
+    }
 
-  h2 {
-    font-size: 1.2rem;
-  }
+    h2 {
+        font-size: 1.2rem;
+    }
 }
+
+
 @media (min-width: 576px) and (max-width: 767.98px) {
-  h1 {
-    font-size: 2rem;
-  }
+    h1 {
+        font-size: 2rem;
+    }
 
-  p {
-    font-size: 0.8rem;
-  }
+    p {
+        font-size: 0.8rem;
+    }
 
-  h2 {
-    font-size: 1.7rem;
-  }
+    h2 {
+        font-size: 1.7rem;
+    }
 }
+
 @media (min-width: 768px) and (max-width: 991.98px) {
-  h1 {
-    font-size: 2rem;
-  }
+    h1 {
+        font-size: 2rem;
+    }
 
-  p {
-    font-size: 0.8rem;
-  }
+    p {
+        font-size: 0.8rem;
+    }
 
-  h2 {
-    font-size: 1.7rem;
-  }
+    h2 {
+        font-size: 1.7rem;
+    }
 }
+
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+}
+
+
+@media (min-width: 1200px) {
+}
+    */
 p {
   text-align: justify;
+}
+
+.my-link {
+  color: #007bff;
+}
+
+.my-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.my-block-element {
+  display: block;
 }
 
 /*# sourceMappingURL=AppStyles.css.map */

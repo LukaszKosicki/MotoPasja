@@ -25,8 +25,6 @@ namespace MotoPasja.Models
                 Contents = "Bycie motocyklistą wiąże się z dumnym posiadaniem wypasionych dwóch kółek, uciechą z jazdy oraz podrywaniem dziewczyn (lub chłopaków). Jednak oprócz tego pojawia się wiele, nieuświadomionych na początku, kwestii. Począwszy od tego, że po uciułaniu na wymarzoną maszynę masz o wiele chudszy portfel, kończąc na tym, że całkowicie zmienia się twój język i zaczynasz posługiwać się motocyklowym slangiem. Poznaj 10 smaczków z życia “prawdziwego” motocyklisty.",
                 DateOfAddition = DateTime.Now,
                 EditingDate = DateTime.Now,
-                Miniature = File.ReadAllBytes(Path.Combine(
-                            Directory.GetCurrentDirectory(), "clientApp", configuration["RootFolder"], "images", "a.jpg")),
                 Images = new List<BlogImage>
                         {
                             new BlogImage
@@ -115,7 +113,7 @@ namespace MotoPasja.Models
             {
                 admin = new AppUser
                 {
-                    Avatar =  File.ReadAllBytes($@"C:\Users\lukas\Pulpit\team.png"),
+                    Avatar = File.ReadAllBytes($@"C:\Users\lukas\Pulpit\team.png"),
                     UserName = adminName
                 };
                 await userManager.CreateAsync(admin, adminPassword);

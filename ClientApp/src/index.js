@@ -8,13 +8,14 @@ import { combineReducers } from "redux";
 import post from '../src/store/reducers/post';
 import blog from '../src/store/reducers/blog';
 import thunk from "redux-thunk";
-import { getUser } from './store/actions/user';
-import { user } from "../src/store/reducers/user";
+import { getUser } from './store/actions/loggedUser';
+import { user } from "./store/reducers/loggedUser";
+import { form } from "./store/reducers/loginRegisterForm";
 
 var destination = document.querySelector('#root');
 
 var combine = combineReducers({
-    post, blog, user
+    post, blog, user, form
 });
 
 function configureStore() {
