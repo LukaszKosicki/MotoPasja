@@ -7,13 +7,16 @@ import UserNameFormGroup from "../account/container/UserNameFormGroup";
 import './FormStyles.css';
 import { connect } from "react-redux";
 import { resetForm } from "../../store/actions/loginRegisterForm";
+import MyAlert from "../common/MyAlert";
 
 class Register extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             check: false,
-            isOpenAlert: false
+            isOpenAlert: false,
+            errorsList: [],
+            isOpenAlertFromServer: false
         };
         this.props.resetForm();
     }
@@ -55,10 +58,9 @@ class Register extends React.Component {
                             state: { statement: resp.message }
                         })
                     } else {
-                        this.props.history.push({
-                            pathname: "/error",
-                            state: { statement: resp.message }
-                        })
+                        this.setState({
+                            errorsList: resp.errors
+                        });
                     }
                 })
         } else {
@@ -80,9 +82,13 @@ class Register extends React.Component {
         };
         return (
             <div>
+                <MyAlert
+                    errorsList={this.state.errorsList}
+                    />
                 <Alert color="danger" isOpen={this.state.isOpenAlert} toggle={this.dismissAlert}>
                     Żeby się zarejestrować uzupełnij poprawnie formularz!
                 </Alert>
+               
                 <div style={parentDiv}>
                     <div className="loginForm" style={childDiv}>
                         <Form>

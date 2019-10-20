@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using MotoPasja.Services;
 using System.Net.Mail;
+using System.Text;
 
 namespace MotoPasja.Controllers
 {
@@ -84,12 +85,12 @@ namespace MotoPasja.Controllers
                         Success = true,
                         UserNameChanged = true,
                         user.UserName,
-                        EmaiChanged = false
+                        EmailChanged = false
                     });
                     else if (updateUserNameResult == null && model.Email != user.Email) return Json(new
                     {
                         Success = true,
-                        UserNameChenged = false,
+                        UserNameChanged = false,
                         EmailChanged = true
                     });
                     
@@ -131,12 +132,8 @@ namespace MotoPasja.Controllers
         public async Task<JsonResult> UpdateAvatar()
         {
             AppUser user = await userManager.GetUserAsync(HttpContext.User);
-
-            using (var memoryStream = new MemoryStream())
-            {
-                await Request.Form.Files[0].CopyToAsync(memoryStream);
-                user.Avatar = memoryStream.ToArray();
-            }
+            string s = Request.Form["avatar"];
+            user.Avatar = Convert.FromBase64String(s);
 
             IdentityResult result = await userManager.UpdateAsync(user);
 
@@ -145,6 +142,25 @@ namespace MotoPasja.Controllers
                 return Json("data:image/png;base64," + Convert.ToBase64String(user.Avatar));
             }      
             return Json(false);
+        }
+
+        [HttpPatch]
+        public async Task<JsonResult> DeleteAvatar()
+        {
+            AppUser user = await userManager.GetUserAsync(HttpContext.User);
+            user.Avatar = null;
+            if ((await userManager.UpdateAsync(user)).Succeeded)
+            {
+                return Json(new
+                {
+                    Success = true,
+                    Avatar = "images/avatar.png"
+                });
+            }
+            return Json(new
+            {
+                Success = false
+            });
         }
 
         [AllowAnonymous]

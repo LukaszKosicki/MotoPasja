@@ -3,6 +3,7 @@ import UserAvatar from "../presentational/UserAvatar";
 import UserData from "../presentational/UserData";
 import { connect } from "react-redux";
 import { Button } from "reactstrap";
+import { resetForm } from "../../../store/actions/loginRegisterForm";
 
 class GetUser extends React.Component {
     constructor(props) {
@@ -54,6 +55,7 @@ class GetUser extends React.Component {
     }
 
     editData = () => {
+        this.props.resetForm();
         this.setState({
             editData: !this.state.editData
         });
@@ -96,4 +98,8 @@ const mapStateToProps = state => ({
     ...state
 });
 
-export default connect(mapStateToProps)(GetUser);
+const mapDispatchToProps = dispatch => ({
+    resetForm: () => dispatch(resetForm())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(GetUser);

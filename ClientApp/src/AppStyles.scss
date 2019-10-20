@@ -67,3 +67,14 @@ p {
 .my-block-element {
     display: block;
 }
+
+.my-alert {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.no-margin {
+    margin: 0px;
+}

@@ -66,15 +66,23 @@ namespace MotoPasja.Controllers
                         Message = "Grtulacje!"
                     }); 
                 }
+                // identityResult == false    
+                List<string> errors = new List<string>();
+                foreach (var err in result.Errors)
+                {
+                    errors.Add(err.Description);
+                }
+
                 return Json(new
                 {
                     Success = false,
-                    Message = "Coś Poszło nie tak. Spróbuj jeszcze raz!"
+                    Errors = errors
                 });            
             }
+
             return Json(new {
                 Success = false,
-                Message = "Wprowadzone dane są nieprawidłowe. Popraw je i spróbuj jeszcze raz!"
+                Errors = new List<string> { "Wprowadzone dane nie spełniają wymagań aplikacji. Popraw je i spróbuj jeszcze raz." }
             });
         }
 
@@ -105,19 +113,19 @@ namespace MotoPasja.Controllers
                     }
                     return Json(new {
                         Success = false,
-                        Message = "Nieprawidłowe hasło lub e-mail"
+                        Errors = new List<string> { "Nieprawidłowe hasło lub e-mail" }
                     });
                 }
                 return Json(new
                 {
                     Success = false,
-                    Message = $"Użytkownik o adresie e=mail: {model.Email} nie istnieje."
+                    Errors = new List<string> { $"Użytkownik o adresie e=mail: {model.Email} nie istnieje." }
                 });
             }    
             return Json(new
             {
                 Success = false,
-                Message = $"Wprowadzone dane są nieprawidłowe."
+                Errors = new List<string> { $"Wprowadzone dane są nieprawidłowe." }
             });
         } 
 

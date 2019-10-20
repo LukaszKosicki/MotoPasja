@@ -7,13 +7,15 @@ import { withRouter } from "react-router-dom";
 import EmailFormGroup from "./container/EmailFormGroup";
 import PasswordFormGroup from "./container/PasswordFormGroup";
 import { resetForm } from "../../store/actions/loginRegisterForm";
+import MyAlert from "../common/MyAlert";
 
 class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             check: false,
-            isOpenAlert: false
+            isOpenAlert: false,
+            errorsList: []
         };
         this.props.resetForm();
     }
@@ -47,13 +49,15 @@ class Login extends React.Component {
             })
                 .then(resp => resp.json())
                 .then(resp => {
-                    if (resp.success !== false) {
+                    if (resp.success) {
                         this.props.isLogged(resp);
                         if (this.props.history.location.pathname == "/login") {
                             this.props.history.push("/");
                         }
                     } else {
-                        alert(resp.message);
+                        this.setState({
+                            errorsList: resp.errors
+                        });
                     }
                 })
         } else {
@@ -74,6 +78,9 @@ class Login extends React.Component {
         };
         return (
             <div style={parentDiv}>
+                <MyAlert
+                    errorsList={this.state.errorsList}
+                    />
                 <Alert color="danger" isOpen={this.state.isOpenAlert} toggle={this.dismissAlert}>
                     Żeby się zalogować uzupełnij poprawnie formularz!
                     </Alert>

@@ -1,33 +1,46 @@
 ﻿import React from "react";
 import { connect } from "react-redux";
-import { Table } from "reactstrap";
 import { updateAvatar } from "../../../store/actions/loggedUser";
+import MyAvatar from "../Avatar";
+import { Alert } from "reactstrap";
 
 class UserAvatar extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            addNewAvatar: false,
+            isOpenChangeEmailAlert: false
+        };
     }
-    
-    sendAvatar = (e) => {
-        var formData = new FormData();
-        formData.append("avatar", e.target.files[0]);
 
-        fetch("User/UpdateAvatar", {
-            method: "POST",
-            body: formData
+    newAvatarForm = () => {
+        this.setState({
+            addNewAvatar: !this.state.addNewAvatar
+        });
+    }
+
+    dismissAlert = () => {
+        this.setState({
+            isOpenChangeEmailAlert: !this.state.isOpenChangeEmailAlert
+        });
+    }
+
+    deleteAvatar = () => {
+        fetch("user/deleteAvatar", {
+            method: "patch"
         })
             .then(res => res.json())
-            .catch(error => console.log(error))
             .then(res => {
-                this.props.getUser();
-                this.props.updateAvatar(res);
-            });
+                if (res.success) {
+                    this.props.updateAvatar(res.avatar);
+                    this.props.getUser();
+                } else {
+                    this.dismissAlert();
+                }
+            })
     }
-    
+
     render() {
-        var mainComponentDiv = {
-            textAlign: "left"
-        };
         var avatarDiv = {
             position: "relative",
             display: "inline-block"
@@ -49,13 +62,35 @@ class UserAvatar extends React.Component {
             right: "0px",
             bottom: "0px"
         };
+        var deleteIcon = {
+            position: "absolute",
+            right: "0px",
+            top: "0px"
+        };
         return (
-            <div style={mainComponentDiv}>
+            <div className="avatar">
+                <Alert className="my-alert" color="danger" isOpen={this.state.isOpenChangeEmailAlert} toggle={this.dismissAlert}>
+                    Coś poszło nie tak. Odśwież stronę i spróbuj usunąć swój awatar jeszcze raz!!
+                </Alert>
                 <div style={avatarDiv}>
                     <img style={avatar} src={this.props.avatar} alt="Red dot" />
+                    {
+                     this.state.addNewAvatar &&  
+                        <MyAvatar
+                            getUser={this.props.getUser}
+                            close={this.newAvatarForm}
+                        />
+                      
+                    }
                     {this.props.userName === this.props.loggedUser &&
                         <div>
-                        <input id="avatar" onChange={this.sendAvatar} style={input} type="file" />
+                            <button id="deleteAvatar" onClick={this.deleteAvatar} style={input}></button>
+                        <label className="edit-avatar-icon" style={deleteIcon} htmlFor="deleteAvatar"><img src="/icons/deleteAvatar.png" /></label>
+                        </div>
+                    }
+                    {this.props.userName === this.props.loggedUser &&
+                        <div>
+                            <button id="avatar" onClick={this.newAvatarForm} style={input}></button>
                         <label className="edit-avatar-icon" style={editIcon} htmlFor="avatar"><img src="/icons/editAvatar.png" /></label>
                         </div>
                     }

@@ -43,7 +43,8 @@ namespace MotoPasja
                 opts.SignIn.RequireConfirmedEmail = true;
             })
                 .AddEntityFrameworkStores<AppIdentityDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddErrorDescriber<PolishIdentityErrorDescriber>();
 
 
         

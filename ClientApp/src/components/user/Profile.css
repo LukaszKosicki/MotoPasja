@@ -12,11 +12,17 @@
 
   .user-avatar {
     float: left;
+    width: 100%;
   }
 
   .user-data {
     margin-left: 15px;
     margin-top: 15px;
+    display: block;
+  }
+
+  .avatar {
+    text-align: center;
   }
 }
 @media (min-width: 576px) and (max-width: 767.98px) {
@@ -33,11 +39,16 @@
 
   .user-avatar {
     float: left;
+    width: 100%;
   }
 
   .user-data {
     margin-left: 15px;
     margin-top: 15px;
+  }
+
+  .avatar {
+    text-align: center;
   }
 }
 @media (min-width: 768px) and (max-width: 991.98px) {
@@ -60,6 +71,14 @@
     margin-left: 15px;
     display: initial;
   }
+
+  .avatar {
+    text-align: left;
+  }
+
+  #password {
+    width: 50%;
+  }
 }
 @media (min-width: 992px) and (max-width: 1199.98px) {
   .user-profile {
@@ -80,6 +99,10 @@
   .user-data {
     margin-left: 15px;
   }
+
+  .avatar {
+    text-align: left;
+  }
 }
 @media (min-width: 1200px) {
   .user-profile {
@@ -99,6 +122,10 @@
 
   .user-data {
     margin-left: 15px;
+  }
+
+  .avatar {
+    text-align: left;
   }
 }
 .edit-avatar-icon:hover {

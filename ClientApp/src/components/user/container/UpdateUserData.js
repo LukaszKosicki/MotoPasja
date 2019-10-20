@@ -1,12 +1,12 @@
 ﻿import React from "react";
-import { Form, FormGroup, Label, Input, Col, Row, Button, FormText, Alert } from "reactstrap";
+import { Form, Col, Row, Button } from "reactstrap";
 import UserNameFormGroup from "../../account/container/UserNameFormGroup";
 import EmailFormGroup from "../../account/container/EmailFormGroup";
 import PasswordFormGroup from "../../account/container/PasswordFormGroup";
 import { connect } from "react-redux";
 import { resetForm } from "../../../store/actions/loginRegisterForm";
 import { updateUserName } from "../../../store/actions/loggedUser";
-import { email, nullOrEmpty } from "../../../js/RegularExpressions";
+import { email } from "../../../js/RegularExpressions";
 import { withRouter } from "react-router-dom";
 
 class UpdateUserData extends React.Component {
@@ -14,7 +14,6 @@ class UpdateUserData extends React.Component {
         super(props);
         this.state = {
             enterPasswordForm: false,
-            isOpenChangeEmailAlert: false,
             check: false
         };
     }
@@ -26,7 +25,6 @@ class UpdateUserData extends React.Component {
     }
 
     sendForm = () => {
-        console.log(this.props);
         var data = {
             userName: this.props.newUserName["value"],
             email: this.props.newEmail["value"],
@@ -49,7 +47,7 @@ class UpdateUserData extends React.Component {
                             this.props.updateUserName(res.userName);
                         }
                         if (res.emailChanged) {
-                            this.dismissAlert();
+                            this.props.dismissAlert();
                         }
                         this.props.editData();
                     } else {
@@ -62,12 +60,6 @@ class UpdateUserData extends React.Component {
         } 
     }
 
-    dismissAlert = () => {
-        this.setState({
-            isOpenChangeEmailAlert: !this.state.isOpenChangeEmailAlert
-        });
-    }
-
     showHideEnterPasswordForm = () => {
         this.setState({
             enterPasswordForm: !this.state.enterPasswordForm
@@ -75,7 +67,6 @@ class UpdateUserData extends React.Component {
     }
 
     updateUserData = () => {
-        console.log(this.props);
         if ((this.props.userName !== this.props.newUserName["value"] ||
             this.props.email !== this.props.newEmail["value"]) && (email.test(this.props.newEmail["value"]))) {
             this.showHideEnterPasswordForm();
@@ -90,12 +81,10 @@ class UpdateUserData extends React.Component {
             display: "block"
         };
         return (
-            <Form>
+            <div>
+                <Form>
                 {!this.state.enterPasswordForm &&
                     <Row form>
-                        <Alert color="info" isOpen={this.state.isOpenChangeEmailAlert} toggle={this.dismissAlert}>
-                            Zmieniłeś też adres e-mail. Aby potwierdzić zmianę kliknij w link wysłany na nowy adres e-mail!
-                        </Alert>
                         <Col md={6}>
                             <UserNameFormGroup
                             defaultValue={this.props.userName}
@@ -115,12 +104,13 @@ class UpdateUserData extends React.Component {
                     </Row>
                 }
                 {this.state.enterPasswordForm &&
-                    <div>
-                    <PasswordFormGroup />
-                    <Button style={saveBtn} onClick={this.sendForm} type="button" color="primary">Zapisz zmiany</Button>
-                    </div>
+                    <div>                  
+                        <PasswordFormGroup />
+                        <Button style={saveBtn} onClick={this.sendForm} type="button" color="primary">Zapisz zmiany</Button>
+                    </div>                                      
                 }
-            </Form>
+                </Form>
+            </div>
         );
     }
 }
@@ -132,8 +122,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    updateUserName: userData => dispatch(updateUserName(userData)),
-    resetForm: () => dispatch(resetForm())
+    updateUserName: userData => dispatch(updateUserName(userData))
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UpdateUserData));

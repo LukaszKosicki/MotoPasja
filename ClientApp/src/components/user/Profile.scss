@@ -12,11 +12,17 @@
 
     .user-avatar {
         float: left;
+        width: 100%;
     }
 
     .user-data {
         margin-left: 15px;
         margin-top: 15px;
+        display: block;
+    }
+
+    .avatar {
+        text-align: center;
     }
 }
 
@@ -35,11 +41,16 @@
 
     .user-avatar {
         float: left;
+        width: 100%;
     }
 
     .user-data {
         margin-left: 15px;
         margin-top: 15px;
+    }
+
+    .avatar {
+        text-align: center;
     }
 }
 
@@ -63,6 +74,14 @@
         margin-left: 15px;
         display: initial;
     }
+
+    .avatar {
+        text-align: left;
+    }
+
+    #password {
+        width: 50%;
+    }
 }
 
 
@@ -85,6 +104,10 @@
     .user-data {
         margin-left: 15px;
     }
+
+    .avatar {
+        text-align: left;
+    }
 }
 
 
@@ -106,6 +129,10 @@
 
     .user-data {
         margin-left: 15px;
+    }
+
+    .avatar {
+        text-align: left;
     }
 }
 
