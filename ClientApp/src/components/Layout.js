@@ -11,10 +11,11 @@ import MyProfile from "./user/Profile";
 import Statement from "../components/Statement";
 import EmailConfirmed from "./account/presentational/EmailConfirmed";
 import UnconfirmedEmail from "../components/account/presentational/UnconfirmedEmail";
+import ResetPassword from "../components/account/ResetPassword";
 
 var containerStyles = {
     textAlign: 'center',
-    marginTop: '80px'
+    marginTop: '56px'
 };
 
 export default props => (
@@ -34,6 +35,7 @@ export default props => (
                 <Route path="/success" component={Statement} />
                 <Route path="/emailConfirmed" component={EmailConfirmed} />
                 <Route path="/unconfirmedEmail" component={UnconfirmedEmail} />
+                <Route path="/resetPassword" component={ResetPassword} />
             </Container>
         </div>
     </HashRouter>

@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { Button, Form, Alert } from 'reactstrap';
+import { Button, Form, Alert, } from 'reactstrap';
 import './FormStyles.css';
 import { connect } from 'react-redux';
 import { isLogged } from "../../store/actions/loggedUser";
@@ -8,6 +8,7 @@ import EmailFormGroup from "./container/EmailFormGroup";
 import PasswordFormGroup from "./container/PasswordFormGroup";
 import { resetForm } from "../../store/actions/loginRegisterForm";
 import MyAlert from "../common/MyAlert";
+import ForgotPassword from "../account/ForgotPassword";
 
 class Login extends React.Component {
     constructor(props) {
@@ -15,7 +16,8 @@ class Login extends React.Component {
         this.state = {
             check: false,
             isOpenAlert: false,
-            errorsList: []
+            errorsList: [],
+            forgotPassword: false
         };
         this.props.resetForm();
     }
@@ -30,6 +32,12 @@ class Login extends React.Component {
         this.setState({
             check: !this.state.check
         })
+    }
+
+    forgotPasswordForm = () => {
+        this.setState({
+            forgotPassword: !this.state.forgotPassword
+        });
     }
 
     login = () => {
@@ -76,37 +84,53 @@ class Login extends React.Component {
             display: 'inline-block',
             margin: '0px'
         };
-        return (
-            <div style={parentDiv}>
-                <MyAlert
-                    errorsList={this.state.errorsList}
-                    />
-                <Alert color="danger" isOpen={this.state.isOpenAlert} toggle={this.dismissAlert}>
-                    Żeby się zalogować uzupełnij poprawnie formularz!
-                    </Alert>
-                <div className="loginForm" style={childDiv}>
-                    <Form>
-                        <div style={parentDiv}>
-                            <h4>Logowanie</h4>
-                            <hr />
-                        </div>
-                        <EmailFormGroup
-                            changeCheck={this.changeCheck}
-                            check={this.state.check}
+        if (!this.state.forgotPassword) {
+            return (
+                <div style={parentDiv}>
+                    <div className="my-alert">
+                        <MyAlert
+                            errorsList={this.state.errorsList}
                         />
-                        <PasswordFormGroup
-                            changeCheck={this.changeCheck}
-                            formName="login"
-                            check={this.state.check}
-                        />
-                        <div style={parentDiv}>
-                            <Button type="button" onClick={this.login} color="primary">Zaloguj</Button>
-                            <Button type="button" color="link">Nie pamiętam hasła</Button>
+                        <Alert color="danger" isOpen={this.state.isOpenAlert} toggle={this.dismissAlert}>
+                            Żeby się zalogować uzupełnij poprawnie formularz!
+                        </Alert>
+                    </div>
+                    <div className="conteredContent">
+                        <div className="loginForm" style={childDiv}>
+                            <Form>
+                                <div style={parentDiv}>
+                                    <h4>Logowanie</h4>
+                                    <hr />
+                                </div>
+                                <EmailFormGroup
+                                    changeCheck={this.changeCheck}
+                                    check={this.state.check}
+                                />
+                                <PasswordFormGroup
+                                    changeCheck={this.changeCheck}
+                                    formName="login"
+                                    check={this.state.check}
+                                />
+                                <div style={parentDiv}>
+                                    <Button type="button" onClick={this.login} color="primary">Zaloguj</Button>
+                                    <Button type="button" color="link" onClick={this.forgotPasswordForm}>Nie pamiętam hasła</Button>
+                                </div>
+                            </Form>
                         </div>
-                    </Form>
+                    </div>
                 </div>
-            </div>
             );
+        } else {
+            return (
+                <div style={parentDiv}>
+                    <div className="loginForm" style={childDiv}>
+                        <ForgotPassword
+                            cancel={this.forgotPasswordForm}
+                        />
+                    </div>
+                </div>
+                );
+        }
     }
 }
 

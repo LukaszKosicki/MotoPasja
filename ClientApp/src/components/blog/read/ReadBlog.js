@@ -117,7 +117,6 @@ class ReadBlog extends React.Component {
                             <div id="newPost" style={newPostStyles}>
                                 {this.newPostForm()}
                             </div>
-                        
                     </div>
                 }
                 {this.props.blog.author === this.props.user.user.userName &&

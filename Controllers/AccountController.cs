@@ -141,6 +141,78 @@ namespace MotoPasja.Controllers
             return Redirect(@"https://localhost:44308/#/unconfirmedEmail");
         }
 
+        public async Task<JsonResult> ResetPasswordGenerateToken(string email)
+        {
+            AppUser user = await userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                string token = await userManager.GeneratePasswordResetTokenAsync(user);
+        
+                string confirmationLink = Url.Action("ConfirmEmail",
+                         "Account", new
+                         {
+                             user.Id,
+                             token
+                         },
+                          protocol: HttpContext.Request.Scheme);
+
+                string link = $@"{this.Request.Scheme}://{this.Request.Host}/#/resetPassword?userId={user.Id}&token={token}";
+
+                MailMessage mes = new MailMessage("kontakt@from0to-fullstackdeveloper.pl", "lukaszvip166@onet.pl",
+                            "aktywuj", link);
+
+                MyEmailClient myEmailClient = new MyEmailClient();
+                await myEmailClient.SendEmail(mes);
+
+                return Json(new
+                {
+                    Success = true
+                });
+            }
+            return Json(new
+            {
+                Success = false,
+                Error = $"Użytkownik o adresie e-mail: {email} nie istnieje."
+            });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> ResetPassword()
+        {
+            AppUser user = await userManager.FindByIdAsync(Request.Form["userId"]);
+            string password = Request.Form["password"];
+            string confirmedPassword = Request.Form["confirmedPassword"];
+
+            if (user != null && password == confirmedPassword)
+            {
+                IdentityResult result = await userManager
+                    .ResetPasswordAsync(user, Request.Form["token"], password);
+
+                if (result.Succeeded)
+                {
+                    return Json(new
+                    {
+                        Success = true
+                    });
+                }
+                List<string> errors = new List<string>();
+                foreach (var err in result.Errors)
+                {
+                    errors.Add(err.Description);
+                }
+                return Json(new
+                {
+                    Success = false,
+                    Errors = errors
+                });
+            }
+            return Json(new
+            {
+                Success = false,
+                Errors = new List<string>()
+            });
+        }
+
         public async Task<JsonResult> Logout()
         {
             await signInManager.SignOutAsync();

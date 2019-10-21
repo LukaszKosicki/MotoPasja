@@ -29,7 +29,7 @@ namespace MotoPasja.Controllers
         [HttpPatch]
         public async Task<JsonResult> UpdateUser([FromBody] UpdateUserModel model)
         {
-            AppUser user = await userManager.GetUserAsync(HttpContext.User);   
+            AppUser user = await userManager.GetUserAsync(HttpContext.User);  
             if (user != null)
             {
                 if (userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, model.Password) 

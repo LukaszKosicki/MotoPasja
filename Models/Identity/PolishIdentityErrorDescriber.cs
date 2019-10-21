@@ -28,5 +28,12 @@ namespace MotoPasja.Models.Identity
                 Code = nameof(InvalidEmail),
                 Description = $"Format adresu e-mail {email} jest nieprawidłowy!"
             };
+
+        public override IdentityError InvalidToken() =>
+            new IdentityError
+            {
+                Code = nameof(InvalidToken),
+                Description = "Twój token jest nieprawidłowy. Spróbuj wygenerować link jeszcze raz."
+            };
     }
 }

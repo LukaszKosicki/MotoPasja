@@ -15,8 +15,7 @@ class Register extends React.Component {
         this.state = {
             check: false,
             isOpenAlert: false,
-            errorsList: [],
-            isOpenAlertFromServer: false
+            errorsList: []
         };
         this.props.resetForm();
     }
@@ -82,14 +81,15 @@ class Register extends React.Component {
         };
         return (
             <div>
-                <MyAlert
-                    errorsList={this.state.errorsList}
-                    />
-                <Alert color="danger" isOpen={this.state.isOpenAlert} toggle={this.dismissAlert}>
-                    Żeby się zarejestrować uzupełnij poprawnie formularz!
-                </Alert>
-               
-                <div style={parentDiv}>
+                <div className="my-alert">
+                    <MyAlert
+                        errorsList={this.state.errorsList}
+                        />
+                    <Alert color="danger" isOpen={this.state.isOpenAlert} toggle={this.dismissAlert}>
+                        Żeby się zarejestrować uzupełnij poprawnie formularz!
+                    </Alert>
+                </div>
+                <div className="conteredContent" style={parentDiv}>
                     <div className="loginForm" style={childDiv}>
                         <Form>
                             <div style={parentDiv}>

@@ -15,7 +15,6 @@ class GetPosts extends React.Component {
    
     render() {
         if (this.props.post.posts != null) {
-            console.log(this.props.post.posts);
             var i = 1;
             return (
                 Object.keys(this.props.post.posts).map((type) => {
