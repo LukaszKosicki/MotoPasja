@@ -1,10 +1,9 @@
 ﻿import React from "react";
 import { Form, Col, Row, Button } from "reactstrap";
-import UserNameFormGroup from "../../account/container/UserNameFormGroup";
-import EmailFormGroup from "../../account/container/EmailFormGroup";
-import PasswordFormGroup from "../../account/container/PasswordFormGroup";
+import UserNameFormGroup from "../../../containers/form/UserNameFormGroup";
+import EmailFormGroup from "../../../containers/form/EmailFormGroup";
+import PasswordFormGroup from "../../../containers/form/UserNameFormGroup";
 import { connect } from "react-redux";
-import { resetForm } from "../../../store/actions/loginRegisterForm";
 import { updateUserName } from "../../../store/actions/loggedUser";
 import { email } from "../../../js/RegularExpressions";
 import { withRouter } from "react-router-dom";

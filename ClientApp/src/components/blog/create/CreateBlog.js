@@ -3,7 +3,7 @@ import BlogModel from './BlogModel';
 import $ from 'jquery';
 import { Alert } from "reactstrap";
 import { connect } from "react-redux";
-import Login from "../../account/Login";
+import Login from "../../../containers/account/Login";
 
 class CreateBlog extends React.Component {
     constructor(props) {

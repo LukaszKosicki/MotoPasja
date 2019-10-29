@@ -10,6 +10,8 @@ export default class BlogList extends React.Component {
             if (this.props.blogs != null && this.props.blogs.length > 0) {
             var i = 1;
             return (
+                <div>
+                    <h1>Wszystkie blogi</h1>
                 <CardColumns>
                     {
                         Object.keys(this.props.blogs).map((type) => {
@@ -27,15 +29,20 @@ export default class BlogList extends React.Component {
                             );
                         })
                     }
-                </CardColumns>
+                    </CardColumns>
+                </div>
                 );
             } else if (this.props.blogs == null) {
-            return (
-                <LoadingPage />
+                return (
+                    <div className="conteredContent">
+                        <LoadingPage />
+                    </div>
                 );
             } else if (this.props.blogs.length === 0) {
-            return (
-                <NoData />
+                return (
+                    <div className="conteredContent">
+                        <NoData />
+                    </div>
             );
         }     
     }

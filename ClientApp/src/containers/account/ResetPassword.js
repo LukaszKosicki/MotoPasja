@@ -1,11 +1,9 @@
 ﻿import React from "react";
-import PasswordFormGroup from "../account/container/PasswordFormGroup";
-import ConfirmedPasswordFormGroup from "../account/container/ConfirmedPasswordFormGroup";
 import { connect } from "react-redux";
 import { resetForm } from "../../store/actions/loginRegisterForm";
-import { Button } from "reactstrap";
-import SuccessfulPasswordChange from "../account/SuccessfulPasswordChange";
-import MyAlert from "../common/MyAlert";
+import SuccessfulPasswordChange from "../../components/account/SuccessfulPasswordChange";
+import ChangePasswordForm from "../../components/account/ChangePasswordForm";
+import { withRouter } from "react-router-dom";
 
 class ResetPassword extends React.Component {
     constructor(props) {
@@ -31,7 +29,6 @@ class ResetPassword extends React.Component {
     resetPassword = () => {
         if (this.props.password["valid"] && this.props.confirmedPassword["valid"]) {
             var formData = new FormData();
-            console.log(this.state.token);
             formData.append("password", this.props.password["value"]);
             formData.append("confirmedPassword", this.props.password["value"]);
             formData.append("userId", this.state.userId);
@@ -53,6 +50,9 @@ class ResetPassword extends React.Component {
                         });
                     }
                 })
+                .catch(() => {
+                    this.props.history.push("/error");
+                });
         }
     }
 
@@ -63,47 +63,16 @@ class ResetPassword extends React.Component {
     }
 
     render() {
-        var center = {
-            textAlign: "center"
-        };
-        var successfulDiv = {
-            position: "absolute",
-            height: "100vh",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "100vw",
-            top: "0",
-            left: "0"
-        };
         if (!this.state.passwordChange) {
             return (
-                <div>
-                    <MyAlert
-                        errorsList={this.state.errorsList}
-                        />
-                    <div style={center}>
-                        <h4>Reset hasła</h4>
-                        <hr />
-                    </div>
-                    <PasswordFormGroup
-                        check={this.state.check}
-                        changeCheck={this.changeCheck}
+                <ChangePasswordForm
+                    errorsList={this.state.errorsList}
+                    resetPassword={this.resetPassword}
                     />
-                    <ConfirmedPasswordFormGroup
-                        check={this.state.check}
-                        changeCheck={this.changeCheck}
-                    />
-                    <div style={center}>
-                        <Button onClick={this.resetPassword} color="primary" type="button">Wyślij</Button>
-                    </div>
-                </div>
             );
         } else {
             return (
-                <div style={successfulDiv}>
-                    <SuccessfulPasswordChange />
-                </div>
+                <SuccessfulPasswordChange />
                 );
         }
     }
@@ -118,4 +87,4 @@ const mapDispatchToProps = dispatch => ({
     resetForm: () => dispatch(resetForm())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ResetPassword);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ResetPassword));

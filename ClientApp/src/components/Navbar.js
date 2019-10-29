@@ -28,10 +28,6 @@ class Example extends React.Component {
         };
     }
 
-    componentDidMount() {
-        console.log(this.props);
-    }
-
     toggle () {
         this.setState({
             isOpen: !this.state.isOpen

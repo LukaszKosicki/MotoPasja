@@ -29,6 +29,7 @@ namespace MotoPasja.Controllers
             signInManager = signMgr;
         }
 
+        //nalezy zmienic adres email na ktory wysylane sa wiadomosci
         [HttpPost]
         public async Task<JsonResult> Register([FromBody] CreateModel model)
         {
@@ -46,16 +47,11 @@ namespace MotoPasja.Controllers
                 {
                     string confirmationToken = userManager
                         .GenerateEmailConfirmationTokenAsync(newUser).Result;
-                    string confirmationLink = Url.Action("ConfirmEmail",
-                      "Account", new
-                      {
-                          userid = newUser.Id,
-                          token = confirmationToken
-                      },
-                       protocol: HttpContext.Request.Scheme);
 
+                    string link = $@"{this.Request.Scheme}://{this.Request.Host}/#/confirmEmail?userId={newUser.Id}&token={confirmationToken}";
+                 
                     MailMessage mes = new MailMessage("kontakt@from0to-fullstackdeveloper.pl", "lukaszvip166@onet.pl",
-                        "aktywuj", confirmationLink);
+                        "aktywuj", link);
 
                     MyEmailClient myEmailClient = new MyEmailClient();
                     await myEmailClient.SendEmail(mes);
@@ -129,16 +125,50 @@ namespace MotoPasja.Controllers
             });
         } 
 
-        public async Task<ActionResult> ConfirmEmail(string userId, string token)
+        [HttpPut]
+        public async Task<JsonResult> ConfirmEmail()
         {
-            AppUser user = await userManager.FindByIdAsync(userId);
-            IdentityResult result = userManager.ConfirmEmailAsync(user, token).Result;
-  
-            if (result.Succeeded)
+            AppUser user = await userManager.FindByIdAsync(Request.Form["userId"]);
+
+            if (user != null)
             {
-                return Redirect(@"https://localhost:44308/#/emailConfirmed");
+                if (user.EmailConfirmed)
+                {
+                    return Json(new
+                    {
+                        Success = false,
+                        Errors = new List<string> { "Link nie jest już aktywny. Twój adres jest już zweryfikowany poprawnie!" }
+                    });
+                }
+
+                var result = await userManager.ConfirmEmailAsync(user, Request.Form["token"]);
+
+                if (result.Succeeded)
+                {
+                    return Json(new
+                    {
+                        Success = true
+                    });
+                }
+                List<string> errors = new List<string>();
+                foreach (var err in result.Errors)
+                {
+                    errors.Add(err.Description);
+                }
+                return Json(new
+                {
+                    Success = false,
+                    Errors = errors
+                });
             }
-            return Redirect(@"https://localhost:44308/#/unconfirmedEmail");
+            else
+            {
+                return Json(new
+                {
+                    Success = false,
+                    Errors = new List<string> { "Link aktywujący jest nieprawidłowy. Spróbuj zarejestrować się jeszcze raz!" }
+                });
+            }
         }
 
         public async Task<JsonResult> ResetPasswordGenerateToken(string email)
@@ -147,14 +177,6 @@ namespace MotoPasja.Controllers
             if (user != null)
             {
                 string token = await userManager.GeneratePasswordResetTokenAsync(user);
-        
-                string confirmationLink = Url.Action("ConfirmEmail",
-                         "Account", new
-                         {
-                             user.Id,
-                             token
-                         },
-                          protocol: HttpContext.Request.Scheme);
 
                 string link = $@"{this.Request.Scheme}://{this.Request.Host}/#/resetPassword?userId={user.Id}&token={token}";
 
@@ -172,7 +194,7 @@ namespace MotoPasja.Controllers
             return Json(new
             {
                 Success = false,
-                Error = $"Użytkownik o adresie e-mail: {email} nie istnieje."
+                Errors = new List<string> { $"Użytkownik o adresie e-mail: {email} nie istnieje." }
             });
         }
 

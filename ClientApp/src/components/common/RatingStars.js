@@ -2,7 +2,7 @@
 import ReactStars from 'react-stars';
 import { FormText, Button } from 'reactstrap';
 import RatingForm from "../common/RatingForm";
-import Login from "../../components/account/Login";
+import Login from "../../containers/account/Login";
 import { connect } from "react-redux";
 
 class RatingStars extends React.Component {

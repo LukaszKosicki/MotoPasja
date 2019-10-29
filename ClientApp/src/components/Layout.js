@@ -5,13 +5,13 @@ import { Route, HashRouter } from "react-router-dom";
 import GetBlogs from './blog/blogsList/GetBlogs';
 import ReadBlog from './blog/read/ReadBlog';
 import CreateBlog from './blog/create/CreateBlog';
-import Login from './account/Login';
-import Register from './account/Register';
+import Login from '../containers/account/Login';
+import Register from '../containers/account/Register';
 import MyProfile from "./user/Profile";
 import Statement from "../components/Statement";
-import EmailConfirmed from "./account/presentational/EmailConfirmed";
-import UnconfirmedEmail from "../components/account/presentational/UnconfirmedEmail";
-import ResetPassword from "../components/account/ResetPassword";
+import ResetPassword from "../containers/account/ResetPassword";
+import ConfirmEmail from "../containers/account/ConfirmEmail";
+import Error from "./Error";
 
 var containerStyles = {
     textAlign: 'center',
@@ -33,9 +33,9 @@ export default props => (
                 <Route path="/myProfile/:userName" component={MyProfile} />
                 <Route path="/error" component={Statement} />
                 <Route path="/success" component={Statement} />
-                <Route path="/emailConfirmed" component={EmailConfirmed} />
-                <Route path="/unconfirmedEmail" component={UnconfirmedEmail} />
                 <Route path="/resetPassword" component={ResetPassword} />
+                <Route path="/confirmEmail" component={ConfirmEmail} />
+                <Route path="/error" component={Error} />
             </Container>
         </div>
     </HashRouter>
